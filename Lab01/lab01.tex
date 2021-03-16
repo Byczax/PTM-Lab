@@ -26,10 +26,25 @@
 }
 
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{AO}{rgb}{0,0.5,0}
+\definecolor{ZeroBlue}{rgb}{0,0.28,0.73}
+\definecolor{DarkRed}{rgb}{0.85,0.16,0.16}
 
+\lstdefinelanguage
+   [x64]{Assembler}     % add a "x64" dialect of Assembler
+   [x86masm]{Assembler} % based on the "x86masm" dialect
+   % with these extra keywords:
+   {
+    deletekeywords={mov,inc,org, end, nop, jmp},
+    morekeywords={[3]a,b,r0,r1,r2,r3,r4,r5,r6,r7,\$,c,dptr, @dptr},
+    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end}   
+    } % etc.
+                
 \lstset{
 breaklines=true,
-language=[x86masm]Assembler,
+language=[x64]Assembler,
+keywordsprefix=\#,
+alsoletter=\#,
 numbers=left,
 numberstyle=\tiny,
 tabsize=2,
@@ -38,6 +53,10 @@ breakatwhitespace=false,
 showspaces=false,                
 showstringspaces=false,
 showtabs=false, 
+commentstyle=\color{gray},
+keywordstyle=\color{AO},
+keywordstyle={[2]\color{DarkRed}},
+keywordstyle={[3]\color{ZeroBlue}},
 }
 
 \graphicspath{{pictures/}}
@@ -101,7 +120,7 @@ Przygotować program realizujący sortowanie bąbelkowe lub znajdujący minimum 
 tablicy 1-wymiarowej rozpoczynającej się od adresu 8000H pamięci zewnętrznej danych (XRAM)
 i obejmującej 16 kolejnych komórek tej tablicy.
 \subsection{Rozwiązanie}
-
+\lstinputlisting{zad2.a51}
 \section{Zadanie 3}
 \subsection{Polecenie}
 Przygotować program realizujący ciekawe zapalanie/gaszenie diód podłączonych do portu P1.
