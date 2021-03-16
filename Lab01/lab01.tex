@@ -1,0 +1,110 @@
+%!TEX program = xelatex
+%Template created by: Maciej Byczko
+\documentclass[a4paper,12pt]{extarticle}  %typ dokumentu
+
+\usepackage[utf8]{inputenc} %rodzaj czcionki w dokumencie
+\usepackage{geometry} %poprawienie marginesów
+\usepackage{polski} %polskie znaki
+\usepackage{multirow} %tabela
+\usepackage{graphicx} %tabela
+\usepackage{float} %poprawienie pozycji
+\usepackage{amsmath} % Matma
+\usepackage{fancyhdr} % header i footer
+\usepackage{xcolor} %kolorowy tekst
+\usepackage{boldline}%edytowanie grubości krawędzi w tabelach \hlineB{} \clineB{}{}
+\usepackage{listings} %pisanie kodu w ładny sposób, begin{listings}[language=<jezyk>]...end{listings} tak samo jak nazwa paczki
+
+\usepackage{hyperref} %tworzenie odnośników, \url{<url>}, \href{<file path, link>}{<text with link>} \pageref{}
+
+%Ustawienie paczki hyperref
+\hypersetup{
+     colorlinks,
+     citecolor=black,
+     filecolor=black,
+     linkcolor=black,
+     urlcolor=black
+}
+
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{
+breaklines=true,
+language=[x86masm]Assembler,
+numbers=left,
+numberstyle=\tiny,
+tabsize=2,
+backgroundcolor=\color{backcolour},
+breakatwhitespace=false,
+showspaces=false,                
+showstringspaces=false,
+showtabs=false, 
+}
+
+\graphicspath{{pictures/}}
+\geometry{margin=0.7in}
+\pagestyle{fancy}
+\cfoot{Strona \thepage}
+\rhead{Strona \thepage}
+\lhead{\typdoc}
+\newcolumntype{?}{!{\vrule width 1.5pt}}
+
+\title{\tytul}
+\author{\tworcy}
+\date{\data}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+\node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+
+%-----------------------SEKCJA DANYCH----------------------------------
+\def\tytul{Arytmetyka, logika, pamięć, diody i brzęczyki} %<<< tytuł ćwiczenia
+\def\nrcw{2} %<<< numer ćwiczenia
+\def\data{11 Marca 2021} %<< data wykonania
+\def\prowadzacy{dr inż. Jacek Mazurkiewicz} %<<<prowadzący
+\def\nrgrupy{B} %<<<numer grupy
+\def\tworcy{Maciej Byczko\\Bartosz Matysiak} %<<< autorzy
+\def\zajinfo{Cz 13:15 TN} %<<< informacje dotyczące zajęć
+\def\typdoc{Sprawozdanie} %<<< typ dokumentu tj Sprawozdanie, zadania itp. {Matematyka dyskretna/Sprawozdanie z Miernictwa}
+% \tableofcontents % Stworzenie spis treści
+%JEŻELI COS JESZCZE POTRZEBA W TEJ SEKCJI TO POINFORMOWAĆ!!!
+%----------------------------------------------------------------------
+
+%-----------------------SEKCJA FORMATOWANIA----------------------------
+% \textbf{pogrubienie}  \textit{kursywa}    \underline{podkreślenie}
+% \vspace*{2mm} - Odstęp pionowy między tekstem
+%----------------------------------------------------------------------
+
+\begin{document}
+%-------------------------------------TABELA-DANYCH--------------------------------------------------
+    \begin{table}[H]
+        \centering
+        \resizebox{\textwidth}{!}{
+        \begin{tabular}{|c|c|c|}\hline
+            \begin{tabular}[c]{@{}c@{}}                     \tworcy     \end{tabular}&
+            \begin{tabular}[c]{@{}c@{}}Prowadzący:\\        \prowadzacy \end{tabular}&
+            \begin{tabular}[c]{@{}c@{}}Numer ćwiczenia\\    \nrcw       \end{tabular}        \\ \hline
+            \begin{tabular}[c]{@{}c@{}}                     \zajinfo    \end{tabular}&
+            \begin{tabular}[c]{@{}c@{}}Temat ćwiczenia:\\   \tytul      \end{tabular}& Ocena:\\ \hline
+            \begin{tabular}[c]{@{}c@{}}Grupa:   \\          \nrgrupy    \end{tabular}& 
+            \begin{tabular}[c]{@{}c@{}}Data wykonania:\\    \data       \end{tabular}&       \\ \hline
+        \end{tabular}}
+    \end{table}
+%----------------------------------------------------------------------------------------------------
+\section{Zadanie 1}
+\subsection{Polecenie}
+Przygotować program odejmujący dwie liczby 16-bitowe.
+\subsection{Rozwiązanie}
+\lstinputlisting{zad1.a51}
+
+\section{Zadanie 2}
+\subsection{Polecenie}
+Przygotować program realizujący sortowanie bąbelkowe lub znajdujący minimum albo maksimum
+tablicy 1-wymiarowej rozpoczynającej się od adresu 8000H pamięci zewnętrznej danych (XRAM)
+i obejmującej 16 kolejnych komórek tej tablicy.
+\subsection{Rozwiązanie}
+
+\section{Zadanie 3}
+\subsection{Polecenie}
+Przygotować program realizujący ciekawe zapalanie/gaszenie diód podłączonych do portu P1.
+\subsection{Rozwiązanie}
+
+\end{document}
