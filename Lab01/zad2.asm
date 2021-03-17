@@ -18,7 +18,7 @@ org 0100h;
 	movx @dptr, a    ;zapisz znacznik konca tablicy
 	
 	
-	//alternatywny zapis, w ktorym rozpisano instrukcje
+	//alternatywny kod, w ktorym rozpisano instrukcje
 	//w razie, gdyby uzytkowanik mial potrzebe edycji wartosci bajtow
 	/*
 	mov dptr, #8000h;przejscie na adres 8000 oraz wpisanie liczb do pierwszych 16 komorek
@@ -77,18 +77,39 @@ org 0100h;
 	mov r0, #00h     ;maksimum w tablicy
 	mov dptr, #8000h ;adres poczatkowy
 	
-	odczyt16:		 ;petla odczytujaca 16 elementow tablicy (+ 17-ty, znacznik konca tablicy #00h)
+	odczyt16max:	 ;petla odczytujaca 16 elementow tablicy (+ 17-ty, znacznik konca tablicy #00h)
 	movx a, @dptr	 ;odczyt wartosci spod adresu
+	jz koniecmax
 	clr c     		 ;przygotowanie do odejmowania
 	subb a, r0		 ;odejmowanie sprawdzajace, czy nowa wartosc jest wieksza od dotychczasowej
-	jc niekopiuj	 ;skok warunkowy, jesli nie jest wieksza
+	jc niekopiujmax	 ;skok warunkowy, jesli nie jest wieksza
 	add a, r0		 ;odtworzenie wartosci w rejestrze a
 	mov r0,a		 ;przechowanie nowej maksymalnej wartosci
-	niekopiuj:
+	niekopiujmax:
 	movx a,@dptr	 ;sprawdzenie, czy nie nastapil koniec tablicy
 	inc dptr
-	jnz odczyt16
+	jnz odczyt16max
 	
+	koniecmax:
+	
+	mov r1, #0ffh    ;minimum w tablicy
+	mov dptr, #8000h ;adres poczatkowy
+	
+	odczyt16min:     ;petla odczytujaca 16 elementow tablicy (+ 17-ty, znacznik konca tablicy #00h)
+	movx a, @dptr	 ;odczyt wartosci spod adresu
+	jz koniecmin     ;dodatkowy skok sprawdzajacy, czy pobrano bajt #00h
+	clr c     		 ;przygotowanie do odejmowania
+	subb a, r1		 ;odejmowanie sprawdzajace, czy nowa wartosc jest wieksza od dotychczasowej
+	jnc niekopiujmin	 ;skok warunkowy, jesli nie jest wieksza
+	add a, r1		 ;odtworzenie wartosci w rejestrze a
+	mov r1,a		 ;przechowanie nowej maksymalnej wartosci
+	niekopiujmin:
+	movx a,@dptr	 ;sprawdzenie, czy nie nastapil koniec tablicy
+	inc dptr
+	jnz odczyt16min
+	
+	koniecmin:
+	;teraz wartosc maksymalna znaduje sie w r0, a minimalna w r1
 	nop;
 	nop;
 	nop;
