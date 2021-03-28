@@ -1,5 +1,6 @@
 # Podstawy Techniki Mikroprocesorowej - laboratorium
-Sprawozdania oraz programy wkonane na laboratoria z PTM.
+
+Sprawozdania oraz programy wykonane na laboratoria z PTM.
 
 |      Wydział elektroniki       |  Kierunek: informatyka techniczna |
 |:-------------------------------|------------------------:|
@@ -15,9 +16,9 @@ Sprawozdania oraz programy wkonane na laboratoria z PTM.
 
 | | Temat | Data | Opis | Otrzymana ocena
 | ------------ | ------------ | ------------ | ------------- | -------------
-| :heavy_check_mark: | :one:   | 04.03.2020 | Wprowadzenie                                                | Brak
-| :white_check_mark: | :two:   | 11.03.2020 | Arytmetyka, logika, pamięć, diody i brzęczyki               |
-| :white_check_mark: | :three: | 25.03.2020 | |
+| :heavy_check_mark: | :one:   | 04.03.2020 | Wprowadzenie                                  | Brak
+| :white_check_mark: | :two:   | 11.03.2020 | Arytmetyka, logika, pamięć, diody i brzęczyki | 5.0
+| :white_check_mark: | :three: | 25.03.2020 | Wyświetlacz LCD                               |
 | :white_check_mark: | :four:  | 08.04.2020 | |
 | :white_check_mark: | :five:  | 22.04.2020 | |
 | :white_check_mark: | :six:   | 06.05.2020 | |
