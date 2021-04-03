@@ -13,7 +13,7 @@ LCDdataWR  equ 0FF3DH	   ; adres do podania kodu ASCII na LCD
 
 org 0100h
 	
-	// deklaracja tekstów
+// deklaracja tekstów
 	text_przycisk: db "przycisk", 00
 	text_button:  db "Wcisnieto", 00
 	text_button1: db "Przycisk 1", 00
@@ -24,7 +24,7 @@ org 0100h
 	text_end: db "Do widzenia ;)", 00
 	text_test: db "wypisz 16 znaków", 00
 
-	// macro do wprowadzenia bajtu sterujacego na LCD
+// macro do wprowadzenia bajtu sterujacego na LCD
 LCDcntrlWR MACRO x		  ; x – parametr wywolania macra – bajt sterujacy
 		   LOCAL loop	   ; LOCAL oznacza ze etykieta loop moze sie powtórzyc w programie
 loop: MOV  DPTR,#LCDstatus  ; DPTR zaladowany adresem statusu
@@ -36,7 +36,7 @@ loop: MOV  DPTR,#LCDstatus  ; DPTR zaladowany adresem statusu
 	  MOVX @DPTR,A		  ; bajt sterujacy podany do LCD – zadana akcja widoczna na LCD
 	  ENDM
 	
-	// macro do wypisania znaku ASCII na LCD, znak ASCII przed wywolaniem macra ma byc w A
+// macro do wypisania znaku ASCII na LCD, znak ASCII przed wywolaniem macra ma byc w A
 LCDcharWR MACRO
 	  LOCAL tutu			; LOCAL oznacza ze etykieta tutu moze sie powtórzyc w programie
 	  PUSH ACC			  ; odlozenie biezacej zawartosci akumulatora na stos
@@ -51,25 +51,24 @@ tutu: MOV  DPTR,#LCDstatus  ; DPTR zaladowany adresem statusu
 	  MOVX @DPTR,A		  ; kod ASCII podany do LCD – znak widoczny na LCD
 	  ENDM
 	
-	// macro do inicjalizacji wyswietlacza – bez parametrów
+// macro do inicjalizacji wyswietlacza – bez parametrów
 init_LCD MACRO
 		 LCDcntrlWR #INITDISP ; wywolanie macra LCDcntrlWR – inicjalizacja LCD
 		 LCDcntrlWR #CLEAR	; wywolanie macra LCDcntrlWR – czyszczenie LCD
 		 LCDcntrlWR #LCDON	; wywolanie macra LCDcntrlWR – konfiguracja kursora
 		 ENDM
 		 
-write_str	 MACRO x
+// wypisz zadany tekst
+write_str MACRO x
 		mov dptr, x
 		acall putstrLCD
 		ENDM
 		 
-		 
-
 // funkcja wypisania znaku
 putcharLCD:	LCDcharWR
 			ret
 		
-	//funkcja wypisania lancucha znaków		
+//funkcja wypisania lancucha znaków		
 putstrLCD:  mov r7, #30h	; DPL ustawiony tak by byl w DPRT adres FF30H
 nextchar:	clr a
 			movc a, @a+dptr
@@ -84,7 +83,7 @@ nextchar:	clr a
 			sjmp nextchar
 	koniec: ret
 					
-	// funkcja opóznienia
+// funkcja opóznienia
 	delay:	mov r0, #15H
 	one:	mov r1, #0FFH
 	dwa:	mov r2, #0FFH
@@ -93,8 +92,7 @@ nextchar:	clr a
 			djnz r0, one
 			ret
 	
-			
-		 
+// program glówny	 
 start: init_LCD
 
 			mov r6, #0FFH	; adres LCDdataWR  equ 0FF3DH jest w parze R6-R7
@@ -104,22 +102,9 @@ start: init_LCD
 			write_str #text_test
 			LCDcntrlWR #HOM2
 			write_str #text_exit
-			
-			
-			select:
-			
-			clr c
-			orl c, p3.3
-			orl c, p3.4
-			jnc exit
-			
-			mov a, p3
-			jnb acc.2, push_button1
-			jnb acc.3, push_button2
-			jnb acc.4, push_button3
-			jnb acc.5, push_button4
 			jmp select
-			
+			// przez krótki zasieg jump musimy podzielic sekcje wypisywania na 2 czesci
+			// czesc pierwsza wypisywania
 			push_button1:
 				LCDcntrlWR #CLEAR
 				write_str #text_button
@@ -132,6 +117,22 @@ start: init_LCD
 				LCDcntrlWR #HOM2
 				write_str #text_button2
 				jmp select
+			
+			select:
+			
+			clr c ; wyczysc zmienna c
+			orl c, p3.3; jezeli przycisk 2 jest wcisniety, daj zmiennej c = 1
+			orl c, p3.4; jezeli przycisk 2 jest wcisniety lub c jest równe 1, daj zmiennej c = 1
+			jnc loop_exit; jezeli c = 1, przejdz do zakonczenia programu
+			
+			mov a, p3; przenies wcisnieta wartosc do akumulatora i skocz do wybranej opcji
+			jnb acc.2, push_button1
+			jnb acc.3, push_button2
+			jnb acc.4, push_button3
+			jnb acc.5, push_button4
+			jmp select
+			
+			// czesc druga wypisywania
 			push_button3:
 				LCDcntrlWR #CLEAR
 				write_str #text_button
@@ -144,9 +145,10 @@ start: init_LCD
 				LCDcntrlWR #HOM2
 				write_str #text_button4
 				jmp select
-			exit:
-			LCDcntrlWR #CLEAR
-			write_str #text_end
+				
+			loop_exit:
+				LCDcntrlWR #CLEAR
+				write_str #text_end
 	
 	nop
 	nop

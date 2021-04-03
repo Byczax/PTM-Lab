@@ -2,7 +2,7 @@
 %Template created by: Maciej Byczko
 \documentclass[a4paper,12pt]{extarticle}  %typ dokumentu
 
-\usepackage[utf8]{inputenc} %rodzaj czcionki w dokumencie
+% \usepackage[utf8]{inputenc} %rodzaj czcionki w dokumencie
 \usepackage{geometry} %poprawienie marginesów
 \usepackage{polski} %polskie znaki
 \usepackage{multirow} %tabela
@@ -12,7 +12,7 @@
 \usepackage{fancyhdr} % header i footer
 \usepackage{xcolor} %kolorowy tekst
 \usepackage{boldline}%edytowanie grubości krawędzi w tabelach \hlineB{} \clineB{}{}
-\usepackage{listings} %pisanie kodu w ładny sposób, begin{listings}[language=<jezyk>]...end{listings} tak samo jak nazwa paczki
+\usepackage{listings} %pisanie kodu w ładny sposób, begin{listings}[language=<język>]...end{listings} tak samo jak nazwa paczki
 
 \usepackage{hyperref} %tworzenie odnośników, \url{<url>}, \href{<file path, link>}{<text with link>} \pageref{}
 
@@ -65,6 +65,7 @@ keywordstyle={[3]\color{ZeroBlue}},
 \cfoot{Strona \thepage}
 \rhead{Strona \thepage}
 \lhead{\typdoc}
+\setlength{\headheight}{15pt}
 \newcolumntype{?}{!{\vrule width 1.5pt}}
 
 \title{\tytul}
@@ -125,6 +126,5 @@ Następnie pojawia się pauza, a po jej zakończeniu kasujemy bieżącą zawarto
 linii wyświetlamy następne 16 znaków tekstu, w drugiej - kolejne 16 znaków tekstu, pauza, itd.
 Akcja dobiega końca gdy zostanie takimi etapami wyświetlony cały przygotowany łańcuch znaków.
 \subsection{Rozwiązanie}
-% \lstinputlisting{zad1.a51}
-
+\lstinputlisting{zad2.asm}
 \end{document}
