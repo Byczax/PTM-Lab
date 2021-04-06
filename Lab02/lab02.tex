@@ -33,30 +33,31 @@
 \lstdefinelanguage
    [x64]{Assembler}     % add a "x64" dialect of Assembler
    [x86masm]{Assembler} % based on the "x86masm" dialect
-   % with these extra keywords:
+   % nie wolno zamieniać kolejności deklaracji morekeywords
    {
-    deletekeywords={mov,inc,org, end, nop, jmp},
-    morekeywords={[3]a,b,r0,r1,r2,r3,r4,r5,r6,r7,\$,c,dptr, @dptr},
-    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end}   
-    } % etc.
+    deletekeywords={mov,inc,org, end, nop, jmp, jnb, jnc, pop, jz, push, ret, jb},
+    morekeywords={[3]a,b,r0,r1,r2,r3,r4,r5,r6,r7,\$,c,dptr, @dptr, @a, 00, acc},
+    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb}   
+    }
+
                 
 \lstset{
-breaklines=true,
-language=[x64]Assembler,
-keywordsprefix=\#,
-alsoletter=\#,
-numbers=left,
-numberstyle=\tiny,
-tabsize=2,
-backgroundcolor=\color{backcolour},
-breakatwhitespace=false,
-showspaces=false,                
-showstringspaces=false,
-showtabs=false, 
-commentstyle=\color{gray},
-keywordstyle=\color{AO},
-keywordstyle={[2]\color{DarkRed}},
-keywordstyle={[3]\color{ZeroBlue}},
+     breaklines=true,
+     language=[x64]Assembler,
+     keywordsprefix=\#,
+     alsoletter=\#, 
+     numbers=left,
+     numberstyle=\tiny,
+     tabsize=2,
+     backgroundcolor=\color{backcolour},
+     breakatwhitespace=false,
+     showspaces=false,                
+     showstringspaces=false,
+     showtabs=false, 
+     commentstyle=\color{gray},
+     keywordstyle=\color{AO},
+     keywordstyle={[2]\color{DarkRed}},
+     keywordstyle={[3]\color{ZeroBlue}},
 }
 
 \graphicspath{{pictures/}}
