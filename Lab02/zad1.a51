@@ -14,15 +14,15 @@ LCDdataWR  equ 0FF3DH	   ; adres do podania kodu ASCII na LCD
 org 0100h
 	
 // deklaracja tekstów
-	text_przycisk: db "przycisk", 00
-	text_button:  db "Wcisnieto", 00
-	text_button1: db "Przycisk 1", 00
-	text_button2: db "Przycisk 2", 00
-	text_button3: db "Przycisk 3", 00
-	text_button4: db "Przycisk 4", 00
-	text_exit: db "1+4 aby wyjsc", 00
-	text_end: db "Do widzenia ;)", 00
-	text_test: db "wypisz 16 znaków", 00; ciag zawierajacy dokladnie 16 znakow
+	text_button:  db "Wcisnieto \/\/\/", 00
+	text_button1: db "Przycisk  ->  1 ", 00
+	text_button2: db "Przycisk  ->  2 ", 00
+	text_button3: db "Przycisk  ->  3 ", 00
+	text_button4: db "Przycisk  ->  4 ", 00
+	text_exit: 	  db "1+4 aby wyjsc   ", 00
+	text_end: 	  db "Do widzenia ;)  ", 00
+	text_test: 	  db "wypisz 16 znakow", 00; ciag zawierajacy dokladnie 16 znakow
+	text_buttons: db "2124812489",00
 
 // macro do wprowadzenia bajtu sterujacego na LCD
 LCDcntrlWR MACRO x		  ; x – parametr wywolania macra – bajt sterujacy
@@ -123,9 +123,9 @@ start: init_LCD
 			select:
 			
 			clr c ; wyczysc zmienna c
-			orl c, p3.3; jezeli przycisk 2 jest wcisniety, daj zmiennej c = 1
-			orl c, p3.4; jezeli przycisk 2 jest wcisniety lub c jest równe 1, daj zmiennej c = 1
-			jnc loop_exit; jezeli c = 1, przejdz do zakonczenia programu
+			orl c, p3.2; jezeli przycisk 1 jest wcisniety, daj zmiennej c = 1
+			anl c, p3.5; jezeli przycisk 5 jest wcisniety i p3.2 byl wcisniety, c = 1
+			jc loop_exit; jezeli c = 1, przejdz do zakonczenia programu
 			
 			mov a, p3; przenies wcisnieta wartosc do akumulatora i skocz do wybranej opcji
 			jnb acc.2, push_button1; wcisnieto przycisk 1
@@ -152,7 +152,6 @@ start: init_LCD
 			loop_exit:
 				LCDcntrlWR #CLEAR
 				write_str #text_end; wypisz pozegnanie
-	
 	nop
 	nop
 	nop
