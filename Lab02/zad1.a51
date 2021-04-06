@@ -22,7 +22,7 @@ org 0100h
 	text_button4: db "Przycisk 4", 00
 	text_exit: db "1+4 aby wyjsc", 00
 	text_end: db "Do widzenia ;)", 00
-	text_test: db "wypisz 16 znaków", 00
+	text_test: db "wypisz 16 znaków", 00; ciag zawierajacy dokladnie 16 znakow
 
 // macro do wprowadzenia bajtu sterujacego na LCD
 LCDcntrlWR MACRO x		  ; x – parametr wywolania macra – bajt sterujacy
@@ -104,13 +104,15 @@ start: init_LCD
 			write_str #text_exit
 			jmp select
 			// przez krótki zasieg jump musimy podzielic sekcje wypisywania na 2 czesci
+			
 			// czesc pierwsza wypisywania
-			push_button1:
-				LCDcntrlWR #CLEAR
-				write_str #text_button
-				LCDcntrlWR #HOM2
-				write_str #text_button1
-				jmp select
+			push_button1:; gdy zostal wcisniety przycisk 1
+				LCDcntrlWR #CLEAR; wyczysc wyswietlacz
+				write_str #text_button; wypisz tekst
+				LCDcntrlWR #HOM2; przesun kursor na kolejna linie
+				write_str #text_button1; wypisz tekst
+				jmp select; skocz to "panelu" wyboru
+				
 			push_button2:
 				LCDcntrlWR #CLEAR
 				write_str #text_button
@@ -126,11 +128,11 @@ start: init_LCD
 			jnc loop_exit; jezeli c = 1, przejdz do zakonczenia programu
 			
 			mov a, p3; przenies wcisnieta wartosc do akumulatora i skocz do wybranej opcji
-			jnb acc.2, push_button1
-			jnb acc.3, push_button2
-			jnb acc.4, push_button3
-			jnb acc.5, push_button4
-			jmp select
+			jnb acc.2, push_button1; wcisnieto przycisk 1
+			jnb acc.3, push_button2; wcisnieto przycisk 2
+			jnb acc.4, push_button3; wcisnieto przycisk 3
+			jnb acc.5, push_button4; wcisnieto przycisk 4
+			jmp select; gdy zaden przycisk nie zostal wybrany skocz na poczatek petli
 			
 			// czesc druga wypisywania
 			push_button3:
@@ -139,6 +141,7 @@ start: init_LCD
 				LCDcntrlWR #HOM2
 				write_str #text_button3
 				jmp select
+				
 			push_button4:
 				LCDcntrlWR #CLEAR
 				write_str #text_button
@@ -148,7 +151,7 @@ start: init_LCD
 				
 			loop_exit:
 				LCDcntrlWR #CLEAR
-				write_str #text_end
+				write_str #text_end; wypisz pozegnanie
 	
 	nop
 	nop
