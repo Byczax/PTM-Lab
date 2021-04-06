@@ -1,0 +1,153 @@
+%!TEX program = xelatex
+%Template created by: Maciej Byczko
+\documentclass[a4paper,12pt]{extarticle}  %typ dokumentu
+
+% \usepackage[utf8]{inputenc} %rodzaj czcionki w dokumencie
+\usepackage{geometry} %poprawienie marginesów
+\usepackage{polski} %polskie znaki
+\usepackage{multirow} %tabela
+\usepackage{graphicx} %tabela
+\usepackage{float} %poprawienie pozycji
+\usepackage{amsmath} % Matma
+\usepackage{fancyhdr} % header i footer
+\usepackage{xcolor} %kolorowy tekst
+\usepackage{boldline}%edytowanie grubości krawędzi w tabelach \hlineB{} \clineB{}{}
+\usepackage{listings} %pisanie kodu w ładny sposób, begin{listings}[language=<język>]...end{listings} tak samo jak nazwa paczki
+
+\usepackage{hyperref} %tworzenie odnośników, \url{<url>}, \href{<file path, link>}{<text with link>} \pageref{}
+
+%Ustawienie paczki hyperref
+\hypersetup{
+     colorlinks,
+     citecolor=black,
+     filecolor=black,
+     linkcolor=black,
+     urlcolor=black
+}
+
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{AO}{rgb}{0,0.5,0}
+\definecolor{ZeroBlue}{rgb}{0,0.28,0.73}
+\definecolor{DarkRed}{rgb}{0.85,0.16,0.16}
+
+\lstdefinelanguage
+   [x64]{Assembler}     % add a "x64" dialect of Assembler
+   [x86masm]{Assembler} % based on the "x86masm" dialect
+   % nie wolno zamieniać kolejności deklaracji morekeywords
+   {
+    deletekeywords={mov,inc,org, end, nop, jmp, jnb, jnc, pop, jz, push, ret, jb},
+    morekeywords={[3]a,b,r0,r1,r2,r3,r4,r5,r6,r7,\$,c,dptr, @dptr, @a, 00, acc},
+    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb}   
+    }
+
+                
+\lstset{
+     breaklines=true,
+     language=[x64]Assembler,
+     keywordsprefix=\#,
+     alsoletter=\#, 
+     numbers=left,
+     numberstyle=\tiny,
+     tabsize=2,
+     backgroundcolor=\color{backcolour},
+     breakatwhitespace=false,
+     showspaces=false,                
+     showstringspaces=false,
+     showtabs=false, 
+     commentstyle=\color{gray},
+     keywordstyle=\color{AO},
+     keywordstyle={[2]\color{DarkRed}},
+     keywordstyle={[3]\color{ZeroBlue}},
+}
+
+\graphicspath{{pictures/}}
+\geometry{margin=0.7in}
+\pagestyle{fancy}
+\cfoot{Strona \thepage}
+\rhead{Strona \thepage}
+\lhead{\typdoc}
+\setlength{\headheight}{15pt}
+\newcolumntype{?}{!{\vrule width 1.5pt}}
+
+\title{\tytul}
+\author{\tworcy}
+\date{\data}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+\node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+
+%-----------------------SEKCJA DANYCH----------------------------------
+\def\tytul{Klawiatura} %<<< tytuł ćwiczenia
+\def\nrcw{4} %<<< numer ćwiczenia
+\def\data{8 Kwietnia 2021} %<< data wykonania
+\def\prowadzacy{dr inż. Jacek Mazurkiewicz} %<<<prowadzący
+\def\nrgrupy{B} %<<<numer grupy
+\def\tworcy{Maciej Byczko\\Bartosz Matysiak} %<<< autorzy
+\def\zajinfo{Cz 13:15 TN} %<<< informacje dotyczące zajęć
+\def\typdoc{Sprawozdanie} %<<< typ dokumentu tj Sprawozdanie, zadania itp. {Matematyka dyskretna/Sprawozdanie z Miernictwa}
+% \tableofcontents % Stworzenie spis treści
+%JEŻELI COS JESZCZE POTRZEBA W TEJ SEKCJI TO POINFORMOWAĆ!!!
+%----------------------------------------------------------------------
+
+%-----------------------SEKCJA FORMATOWANIA----------------------------
+% \textbf{pogrubienie}  \textit{kursywa}    \underline{podkreślenie}
+% \vspace*{2mm} - Odstęp pionowy między tekstem
+%----------------------------------------------------------------------
+
+\begin{document}
+%-------------------------------------TABELA-DANYCH--------------------------------------------------
+\begin{table}[H]
+	\centering
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{|c|c|c|}\hline
+			\begin{tabular}[c]{@{}c@{}}                     \tworcy     \end{tabular} &
+			\begin{tabular}[c]{@{}c@{}}Prowadzący:\\        \prowadzacy \end{tabular} &
+			\begin{tabular}[c]{@{}c@{}}Numer ćwiczenia\\    \nrcw       \end{tabular}          \\ \hline
+			\begin{tabular}[c]{@{}c@{}}                     \zajinfo    \end{tabular} &
+			\begin{tabular}[c]{@{}c@{}}Temat ćwiczenia:\\   \tytul      \end{tabular} & Ocena: \\ \hline
+			\begin{tabular}[c]{@{}c@{}}Grupa:   \\          \nrgrupy    \end{tabular} &
+			\begin{tabular}[c]{@{}c@{}}Data wykonania:\\    \data       \end{tabular} &        \\ \hline
+		\end{tabular}}
+\end{table}
+%----------------------------------------------------------------------------------------------------
+\section{Zadanie 1}
+\subsection{Polecenie}
+uzyskać 8-bitowy kod skaningowy klawisza:
+kod uzyskuje się poprzez:
+\begin{itemize}
+    \item uaktywnienie odpowiedniej linii wiersza:
+    \begin{itemize}
+        \item stan 0 na linii portu P5:od P5.4 do P5.7
+        \item odczytanie stanu młodszej części portu P7: linie od P7.0 do P7.3
+        \item złożenie ustawionego stanu starszej części portu P5i odczytanej młodszej części portu P7 w jeden bajt
+    \end{itemize}
+    \item uzyskany kod skaningowy należy przekazać do jednego z rejestrów R, a następnie stan rejestru podać na diody portu P1
+    \item kod skaningowy powinien być odczytywany w pętli (nieskończonej)
+    \item porty P5 i P7 należy zdefiniować jak port P6 na poprzednich zajęciach:\\ P5 EQU 0F8H \ \ \ P7 EQU 0DBH
+\end{itemize}
+\subsection{Rozwiązanie}
+% \lstinputlisting{zad1.a51}
+\section{Zadanie 2}
+\subsection{Polecenie}
+Zamienić kod skaningowy na NKB:
+\begin{itemize}
+    \item zamiana zgodnie z nadrukiem na klawiszu:\\ 0 – kod 00H, 1 – kod 01H, ... , A – kod 0AH, B – kod 0BH, itd.
+    \item zamianę wykonać poprzez
+    \begin{itemize}
+        \item operacje logiczno-arytmetyczne lub
+        \item tablicę przekodowań w pamięci XRAM:uzyskany kod skaningowy staje się młodszą częścią adresu:80XXH, gdzie XX –uzyskany kod skaningowy
+    \end{itemize}
+\end{itemize}
+\subsection{Rozwiązanie}
+% \lstinputlisting{zad2.asm}
+\section{Zadanie 3}
+\subsection{Polecenie}
+Kontrola repetycji naciśniętego klawisza:
+\begin{itemize}
+    \item rozwiązanie 1: wyłączenie repetycji –kod skaningowy przesyłamy do rejestru dopiero po naciśnięciu i następującym potem zwolnieniu klawisza
+    \item rozwiązanie 2: repetycja kontrolowana martwą pętlą:uzyskujemy kod skaningowy natychmiast po naciśnięciu klawisza, następne uzyskanie kodu skaningowego po „odczekaniu w martwej pętli” –pętli uzyskiwanej jak podczas mrugania diodami
+\end{itemize}
+\section{Zadanie 4}
+\subsection{Polecenie}
+Związanie obsługi klawiatury z wyświetlaczem LCD: połączyć obsługę klawiatury z obsługą wyświetlacza LCDopracowaną na poprzednich zajęciach
+\end{document}
