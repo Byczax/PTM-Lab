@@ -35,9 +35,9 @@
    [x86masm]{Assembler} % based on the "x86masm" dialect
    % nie wolno zamieniać kolejności deklaracji morekeywords
    {
-    deletekeywords={mov,inc,org, end, nop, jmp, jnb, jnc, pop, jz, push, ret, jb},
+    deletekeywords={mov,inc,org, end, nop, jmp, jnb, jnc, pop, jz, push, ret, jb, jc},
     morekeywords={[3]a,b,r0,r1,r2,r3,r4,r5,r6,r7,\$,c,dptr, @dptr, @a, 00, acc},
-    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb}   
+    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb, anl, jc, movc}   
     }
 
                 
@@ -49,6 +49,7 @@
      numbers=left,
      numberstyle=\tiny,
      tabsize=2,
+     morecomment=[l]{//},
      backgroundcolor=\color{backcolour},
      breakatwhitespace=false,
      showspaces=false,                
