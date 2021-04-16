@@ -140,23 +140,31 @@ keyascii:	mov dptr, #80EBH
     start:  init_LCD
 	
 			acall keyascii
-	
-	key_1:	mov r0, #LINE_1
-			mov	a, r0
-			mov	P5, a
-			mov a, P7
-			anl a, r0
-			mov r2, a
-			clr c
-			subb a, r0
-			jz key_2
-			mov a, r2
-			mov dph, #80h
-			mov dpl, a
-			movx a,@dptr
-			mov P1, a
-			acall putcharLCD
-wcisniety_1:mov a, P7 ; jezeli jest cos wcisniete
+			; w nawiasach co sie dzieje gdy przycisk spelniajacy warunek jest wcisniety
+	key_1:	mov r0, #LINE_1; wczytanie linii pierwszej [r0 = 0111 1111]
+			mov	a, r0; wpisanie r0 do akumulatora [ a = 0111 1111]
+			mov	P5, a; aktywacja portu P5 [ P5 = 0111 1111]
+			mov a, P7; wczytanie informacji o wcisnietym przycisku [P7 = 1111 0111 -> a = 1111 0111]
+			anl a, r0; AND - utworzenie maski wiersza [a = 0111 0111]
+			mov r2, a; zapisanie akumulatora na potem [r2 = 0111 0111]
+			clr c; wyczyszczenie c aby nie kolidowal w subb
+			subb a, r0; sprawdzenie czy jest wcisniety przycisk [0111 0111 - 0111 1111 =~ 0000 1000] (=~ niprawdziwy wynik ale pokazane ze rozne od zera) 
+			jz key_2; jezeli nie wcisniety skocz do nastepnego
+			; jezeli przycisk jest wcisniety to wykonaj wyswietlenie:
+			mov a, r2; wczytaj co jest wcisniete [a = 0111 0111]
+			mov dph, #80h ; wpisz wartosc 80 do starszej czesci dptr
+			mov dpl, a; wpisz akumulator do mlodszej czesci dptr
+			movx a,@dptr; ladowanie znaku ascii do akumulatora
+			mov P1, a; podaj znak na port P1 - Diody
+			acall putcharLCD; wypisz znak
+			
+			
+wcisniety_1:
+			; nawiasy z lewej = wcisniete to samo, z prawej = klawisz puszczony
+			mov a, P7; wczytanie informacji o wcisetej kolumnie [P7 = 1111 0111 -> a = 1111 0111] [P7 = 1111 1111 -> a = 1111 1111]
+			anl a, r0; [a = 0111 0111] [a = 0111 1111]
+			clr c; wyczyszczenie aby nie przeszkadzal
+			subb a, r0; odejmij, jezeli jest to samo co wyzej to beda wszystkie 0 [ 0111 0111 - 0111 1111 =~ 0000 1000] [ 0111 1111 - 0111 1111 = 0000 0000]
 			jnz wcisniety_1; to nie przechodz dalej
 			
 	key_2:	mov r0, #LINE_2
@@ -174,8 +182,13 @@ wcisniety_1:mov a, P7 ; jezeli jest cos wcisniete
 			movx a,@dptr
 			mov P1, a
 			acall putcharLCD
-wcisniety_2:mov a, P7
-			jnz wcisniety_2
+wcisniety_2:
+			; nawiasy z lewej = wcisniete to samo, z prawej = klawisz puszczony
+			mov a, P7; wczytanie informacji o wcisetej kolumnie [P7 = 1111 0111 -> a = 1111 0111] [P7 = 1111 1111 -> a = 1111 1111]
+			anl a, r0; [a = 0111 0111] [a = 0111 1111]
+			clr c; wyczyszczenie aby nie przeszkadzal
+			subb a, r0; odejmij, jezeli jest to samo co wyzej to beda wszystkie 0 [ 0111 0111 - 0111 1111 =~ 0000 1000] [ 0111 1111 - 0111 1111 = 0000 0000]
+			jnz wcisniety_2; to nie przechodz dalej
 			
 	key_3:	mov r0, #LINE_3
 			mov	a, r0
@@ -192,8 +205,13 @@ wcisniety_2:mov a, P7
 			movx a,@dptr
 			mov P1, a
 			acall putcharLCD
-wcisniety_3:mov a, P7
-			jnz wcisniety_3
+wcisniety_3:
+			; nawiasy z lewej = wcisniete to samo, z prawej = klawisz puszczony
+			mov a, P7; wczytanie informacji o wcisetej kolumnie [P7 = 1111 0111 -> a = 1111 0111] [P7 = 1111 1111 -> a = 1111 1111]
+			anl a, r0; [a = 0111 0111] [a = 0111 1111]
+			clr c; wyczyszczenie aby nie przeszkadzal
+			subb a, r0; odejmij, jezeli jest to samo co wyzej to beda wszystkie 0 [ 0111 0111 - 0111 1111 =~ 0000 1000] [ 0111 1111 - 0111 1111 = 0000 0000]
+			jnz wcisniety_3; to nie przechodz dalej
 			
 	key_4:	mov r0, #LINE_4
 			mov	a, r0
@@ -210,8 +228,13 @@ wcisniety_3:mov a, P7
 			movx a,@dptr
 			mov P1, a
 			acall putcharLCD
-wcisniety_4:mov a, P7
-			jnz wcisniety_4
+wcisniety_4:
+			; nawiasy z lewej = wcisniete to samo, z prawej = klawisz puszczony
+			mov a, P7; wczytanie informacji o wcisetej kolumnie [P7 = 1111 0111 -> a = 1111 0111] [P7 = 1111 1111 -> a = 1111 1111]
+			anl a, r0; [a = 0111 0111] [a = 0111 1111]
+			clr c; wyczyszczenie aby nie przeszkadzal
+			subb a, r0; odejmij, jezeli jest to samo co wyzej to beda wszystkie 0 [ 0111 0111 - 0111 1111 =~ 0000 1000] [ 0111 1111 - 0111 1111 = 0000 0000]
+			jnz wcisniety_4; to nie przechodz dalej
 			
 			jmp key_1
             
