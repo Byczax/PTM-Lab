@@ -138,9 +138,9 @@ keyascii:
  
  ; znak do wyswietlenia w akumulatorze, ktory jest uzywany - koniecznosc uzycia stosu lub innego rejestru
  putkbdCharsin2Lines:
-		;sprawdzenie, czy r3==#20H, wtedy przenosimy kursor do pierwszej linii
+		;sprawdzenie, czy r5==#20H, wtedy przenosimy kursor do pierwszej linii
 		mov r4, a
-		mov a, r3
+		mov a, r5
 		clr c
 		subb a, #20H
 		jnz nieUstawiajPoczatku1Linii ;
@@ -148,7 +148,7 @@ keyascii:
 		LCDcntrlWR #HOME
 		
 		nieUstawiajPoczatku1Linii:
-		mov a, r3
+		mov a, r5
 		clr c
 		subb a, #10H
 		jnz nieUstawiajPoczatku2Linii
@@ -156,19 +156,19 @@ keyascii:
 		LCDcntrlWR #HOM2
 		
 		nieUstawiajPoczatku2Linii:
-		mov a, r3
+		mov a, r5
 		clr c
 		subb a, #00H
 		jnz nieClear
 		
 		LCDcntrlWR #CLEAR
 		LCDcntrlWR #HOME
-		mov r3, #20H
+		mov r5, #20H
 		
 		nieClear:
 		mov a, r4 ; a - wartosc znaku do wpisania na wyswietlacz
 		acall putCharLCD
-		dec r3
+		dec r5
 		
  koniec: ret
  
@@ -177,7 +177,7 @@ keyascii:
 	
 			acall keyascii
 			
-			mov r3, #20H ;licznik pomocniczy
+			mov r5, #20H ;licznik pomocniczy
 	
 	key_1:	mov r0, #LINE_1
 			mov	a, r0

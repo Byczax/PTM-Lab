@@ -56,118 +56,72 @@ init_LCD MACRO
          ENDM
 
 // funkcja opóznienia
-
-	delay:	mov r1, #0FFH
+	delay:	mov r0, #15H
+	one:	mov r1, #0FFH
 	dwa:	mov r2, #0FFH
     trzy:	djnz r2, trzy
 			djnz r1, dwa
+			djnz r0, one
 			ret
 			
 // funkcja wypisania znaku
 putcharLCD:	LCDcharWR
 			ret
 
- ; znak do wyswietlenia w akumulatorze, ktory jest uzywany - koniecznosc uzycia stosu lub innego rejestru
- putkbdCharsin2Lines:
-		;sprawdzenie, czy r5==#20H, wtedy przenosimy kursor do pierwszej linii
-		mov r4, a
-		mov a, r5
-		clr c
-		subb a, #20H
-		jnz nieUstawiajPoczatku1Linii ;
-		
-		LCDcntrlWR #HOME
-		
-		nieUstawiajPoczatku1Linii:
-		mov a, r5
-		clr c
-		subb a, #10H
-		jnz nieUstawiajPoczatku2Linii
-		
-		LCDcntrlWR #HOM2
-		
-		nieUstawiajPoczatku2Linii:
-		mov a, r5
-		clr c
-		subb a, #00H
-		jnz nieClear
-		
-		LCDcntrlWR #CLEAR
-		LCDcntrlWR #HOME
-		mov r5, #20H
-		
-		nieClear:
-		mov a, r4 ; a - wartosc znaku do wpisania na wyswietlacz
-		acall putCharLCD
-		dec r5
-		
- koniec: ret
-
 // tablica przekodowania klawisze - ASCII w XRAM
 
-keyascii:	
-			;znaki dla nacisniecia *
-			; Uklad klawiatury:
-			/*
-					a b c d
-					e f g h
-					i j k l
-					 m			
-			*/
-			
-			mov dptr, #80EBH
-			mov a, #"m"
+keyascii:	mov dptr, #80EBH
+			mov a, #"0"
 			movx @dptr, a
 			
 			mov dptr, #8077H
-			mov a, #"a"
+			mov a, #"1"
 			movx @dptr, a
 			
 			mov dptr, #807BH
-			mov a, #"b"
+			mov a, #"2"
 			movx @dptr, a
 			
 			mov dptr, #807DH
-			mov a, #"c"
+			mov a, #"3"
 			movx @dptr, a
 			
 			mov dptr, #80B7H
-			mov a, #"e"
+			mov a, #"4"
 			movx @dptr, a
 			
 			mov dptr, #80BBH
-			mov a, #"f"
+			mov a, #"5"
 			movx @dptr, a
 			
 			mov dptr, #80BDH
-			mov a, #"g"
+			mov a, #"6"
 			movx @dptr, a
 			
 			mov dptr, #80D7H
-			mov a, #"i"
+			mov a, #"7"
 			movx @dptr, a
 			
 			mov dptr, #80DBH
-			mov a, #"j"
+			mov a, #"8"
 			movx @dptr, a
 			
 			mov dptr, #80DDH
-			mov a, #"k"
+			mov a, #"9"
 			movx @dptr, a
 			
 			mov dptr, #807EH
-			mov a, #"d"
+			mov a, #"A"
 			movx @dptr, a
 			
 			mov dptr, #80BEH
-			mov a, #"h"
+			mov a, #"B"
 			movx @dptr, a
 			
 			mov dptr, #80DEH
-			mov a, #"l"
+			mov a, #"C"
 			movx @dptr, a
 			
-			/*
 			mov dptr, #80EEH
 			mov a, #"D"
 			movx @dptr, a
@@ -179,152 +133,32 @@ keyascii:
 			mov dptr, #80EDH
 			mov a, #"#"
 			movx @dptr, a
-			*/
 			
-			; znaki dla nacisniecia #
-			; Uklad klawiatury:
-			/*
-					A B C D
-					E F G H
-					I J K L
-					  M
-			*/
-			mov dptr, #81EBH
-			mov a, #"M"
-			movx @dptr, a
-			
-			mov dptr, #8177H
-			mov a, #"A"
-			movx @dptr, a
-			
-			mov dptr, #817BH
-			mov a, #"B"
-			movx @dptr, a
-			
-			mov dptr, #817DH
-			mov a, #"C"
-			movx @dptr, a
-			
-			mov dptr, #81B7H
-			mov a, #"E"
-			movx @dptr, a
-			
-			mov dptr, #81BBH
-			mov a, #"F"
-			movx @dptr, a
-			
-			mov dptr, #81BDH
-			mov a, #"G"
-			movx @dptr, a
-			
-			mov dptr, #81D7H
-			mov a, #"I"
-			movx @dptr, a
-			
-			mov dptr, #81DBH
-			mov a, #"J"
-			movx @dptr, a
-			
-			mov dptr, #81DDH
-			mov a, #"K"
-			movx @dptr, a
-			
-			mov dptr, #817EH
-			mov a, #"D"
-			movx @dptr, a
-			
-			mov dptr, #81BEH
-			mov a, #"H"
-			movx @dptr, a
-			
-			mov dptr, #81DEH
-			mov a, #"L"
-			movx @dptr, a
-			
-			; znaki dla nacisniecia D
-			; Uklad klawiatury:
-			/*
-					1 2 3 A
-					4 5 6 B
-					7 8 9 C
-					  0
-			*/
-			
-			mov dptr, #82EBH
-			mov a, #"0"
-			movx @dptr, a
-			
-			mov dptr, #8277H
-			mov a, #"1"
-			movx @dptr, a
-			
-			mov dptr, #827BH
-			mov a, #"2"
-			movx @dptr, a
-			
-			mov dptr, #827DH
-			mov a, #"3"
-			movx @dptr, a
-			
-			mov dptr, #82B7H
-			mov a, #"4"
-			movx @dptr, a
-			
-			mov dptr, #82BBH
-			mov a, #"5"
-			movx @dptr, a
-			
-			mov dptr, #82BDH
-			mov a, #"6"
-			movx @dptr, a
-			
-			mov dptr, #82D7H
-			mov a, #"7"
-			movx @dptr, a
-			
-			mov dptr, #82DBH
-			mov a, #"8"
-			movx @dptr, a
-			
-			mov dptr, #82DDH
-			mov a, #"9"
-			movx @dptr, a
-			
-			mov dptr, #827EH
-			mov a, #"A"
-			movx @dptr, a
-			
-			mov dptr, #82BEH
-			mov a, #"B"
-			movx @dptr, a
-			
-			mov dptr, #82DEH
-			mov a, #"C"
-			movx @dptr, a
 			ret
  
 // program glówny
     start:  init_LCD
 	
 			acall keyascii
+			; w nawiasach co sie dzieje gdy przycisk spelniajacy warunek jest wcisniety
+	key_1:	mov r0, #LINE_1; wczytanie linii pierwszej [r0 = 0111 1111]
+			mov	a, r0; wpisanie r0 do akumulatora [ a = 0111 1111]
+			mov	P5, a; aktywacja portu P5 [ P5 = 0111 1111]
+			mov a, P7; wczytanie informacji o wcisnietym przycisku [P7 = 1111 0111 -> a = 1111 0111]
+			anl a, r0; AND - utworzenie maski wiersza [a = 0111 0111]
+			mov r2, a; zapisanie akumulatora na potem [r2 = 0111 0111]
+			clr c; wyczyszczenie c aby nie kolidowal w subb
+			subb a, r0; sprawdzenie czy jest wcisniety przycisk [0111 0111 - 0111 1111 =~ 0000 1000] (=~ niprawdziwy wynik ale pokazane ze rozne od zera) 
+			jz key_2; jezeli nie wcisniety skocz do nastepnego
+			; jezeli przycisk jest wcisniety to wykonaj wyswietlenie:
+			mov a, r2; wczytaj co jest wcisniete [a = 0111 0111]
+			mov dph, #80h ; wpisz wartosc 80 do starszej czesci dptr
+			mov dpl, a; wpisz akumulator do mlodszej czesci dptr
+			movx a,@dptr; ladowanie znaku ascii do akumulatora
+			mov P1, a; podaj znak na port P1 - Diody
+			acall putcharLCD; wypisz znak
 			
-			mov r3, #80h         ; zakladamy, ze na poczatku dzialamy w trybie *
-	
-	key_1:	mov r0, #LINE_1
-			mov	a, r0
-			mov	P5, a
-			mov a, P7
-			anl a, r0
-			mov r2, a
-			clr c
-			subb a, r0
-			jz key_2
-			mov a, r2
-			mov dph, r3
-			mov dpl, a
-			movx a,@dptr
-			mov P1, a
-			acall putcharLCD
+			
 wcisniety_1:
 			; nawiasy z lewej = wcisniete to samo, z prawej = klawisz puszczony
 			mov a, P7; wczytanie informacji o wcisetej kolumnie [P7 = 1111 0111 -> a = 1111 0111] [P7 = 1111 1111 -> a = 1111 1111]
@@ -344,7 +178,7 @@ wcisniety_1:
 			subb a, r0
 			jz key_3
 			mov a, r2
-			mov dph, r3
+			mov dph, #80h
 			mov dpl, a
 			movx a,@dptr
 			mov P1, a
@@ -368,7 +202,7 @@ wcisniety_2:
 			subb a, r0
 			jz key_4
 			mov a, r2
-			mov dph, r3
+			mov dph, #80h
 			mov dpl, a
 			movx a,@dptr
 			mov P1, a
@@ -392,24 +226,7 @@ wcisniety_3:
 			subb a, r0
 			jz key_1
 			mov a, r2
-			;mamy teraz backup w r2
-			;sprawdzenie *
-			clr c
-			subb a, #0E7H ;kod skaningowy *
-			jz modeStar
-			;jesli nie, to odtworz a i sprawdz #
-			mov a, r2
-			clr c
-			subb a, #0EDH ;kod skaningowy #
-			jz modeHash
-			;jesli nie, to odtworz i sprawdz D
-			mov a, r2
-			clr c
-			subb a, #0EEH ;kod skaningowy D
-			jz modeD
-			;jesli nic sie nie spelnilo, to znaczy ze mamy naciniety klawisz "0", i mozemy bezpiecznie nawiazac do zainicjowanej wczesniej komorki pamieci
-			mov a, r2
-			mov dph, r3
+			mov dph, #80h
 			mov dpl, a
 			movx a,@dptr
 			mov P1, a
@@ -423,21 +240,9 @@ wcisniety_4:
 			jnz wcisniety_4; to nie przechodz dalej
 			acall delay
 			
-		zapetl:	
 			jmp key_1
             
-			;minifunkcje ustawiajace odpowiedni uklad klawiatury
-			modeStar:
-				mov r3, #080h
-				sjmp zapetl
-				
-			modeHash:
-				mov r3, #081h
-				sjmp zapetl
-				
-			modeD:
-				mov r3, #082h
-				sjmp zapetl
+          
  
     nop
     nop
