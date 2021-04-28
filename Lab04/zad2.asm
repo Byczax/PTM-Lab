@@ -257,6 +257,54 @@ Accept_wait:
     jz ON
 ret
 
+
+Add_time:
+hour10:
+	mov a, r3
+	clr C
+	subb a, #00H
+	jnz hour1
+	mov HOURS, #00H
+	mov a, r4
+	mov b, #10
+	mul ab
+	mov HOURS, a
+	inc r3
+	ret
+hour1:
+	mov a, r3
+	clr C
+	subb a, #01H
+	jnz minute10
+	mov a, r4
+	add a, HOURS
+	mov HOURS, a
+	inc r3
+	ret
+minute10:
+	mov a, r3
+	clr C
+	subb a, #03H
+	jnz minute1
+	mov MINUTES, #00H
+	mov a, r4
+	mov b, #10
+	mul ab
+	mov MINUTES, a
+	inc r3
+	ret
+minute1:
+	mov a, r3
+	clr C
+	subb a, #04H
+	jnz none
+	mov a, r4
+	add a, MINUTES
+	mov MINUTES, a
+	inc r3
+	ret
+none:
+ret
 //==================================================================
 // Program glówny
 START:	
@@ -278,33 +326,120 @@ key_1:
         Check_key #LINE_1
         jz key_2
         acall Accept_wait
+convert1:
+		mov a, r2
+		clr c
+		subb a, #8077H
+		jnz convert2
+		mov a, #1
+		mov r4, #1
+		acall Add_time
 
+convert2:
+		mov a, r2
+		clr c
+		subb a, #807BH
+		jnz convert3
+		mov a, #2
+		mov r4, #2
+		acall Add_time
+convert3:
+		mov a, r2
+		clr c
+		subb a, #807FH
+		jnz key_1
+		mov a, #3
+		mov r4, #3
+		acall Add_time
 
         acall Display_key
 key_2:
         Check_key #LINE_2
         jz key_3
         acall Accept_wait
-
-
+convert4:
+		mov a, r2
+		clr c
+		subb a, #8078H
+		jnz convert5
+		mov a, #4
+		mov r4, #4
+		acall Add_time
+convert5:
+		mov a, r2
+		clr c
+		subb a, #807CH
+		jnz convert6
+		mov a, #5
+		mov r4, #5
+		acall Add_time
         acall Display_key
+convert6:
+		mov a, r2
+		clr c
+		subb a, #8080H
+		jnz key_3
+		mov a, #6
+		mov r4, #6
+		acall Add_time
 key_3:
         Check_key #LINE_3
         jz key_4
         acall Accept_wait
-
+convert7:
+		mov a, r2
+		clr c
+		subb a, #8079H
+		jnz convert8
+		mov a, #7
+		mov r4, #7
+		acall Add_time
+convert8:
+		mov a, r2
+		clr c
+		subb a, #807DH
+		jnz convert9
+		mov a, #8
+		mov r4, #8
+		acall Add_time
+convert9:
+		mov a, r2
+		clr c
+		subb a, #8081H
+		jnz key_4
+		mov a, #9
+		mov r4, #9
+		acall Add_time
 
         acall Display_key
 key_4:
         Check_key #LINE_4
         jz key_1
         acall Accept_wait
+convert#:
+		mov a, r2
+		clr c
+		subb a, #807AH
+
+convert*:
+		mov a, r2
+		clr c
+		subb a, #8082H
 
 
+
+		acall Accept_wait
+		convert0:
+		mov a, r2
+		clr c
+		subb a, #807EH
+		jnz key_1
+		mov a, #2
+		mov r4, #2
+		acall Add_time
+		
         acall Display_key
         jmp key_1
-
-
 
 ON:
 		MOV HOURS, #00H			; inicjacja zegara
