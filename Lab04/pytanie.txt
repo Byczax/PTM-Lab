@@ -1,0 +1,1 @@
+subb a, #807Eh  <- ile bitów ma akumulator?
