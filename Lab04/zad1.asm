@@ -164,6 +164,14 @@ KEY_A:
 		mov a, r3
 		mov r0, a  ;przywrocenie r0 z backupa
 		mov IE, #82H;wlaczenie obslugi przerwan
+		;mozliwe, ze trzeba dorobic petle, ktora nie wypusci, dopoki A zostanie "odcisniete"
+		nieWypuszczajA:
+		mov a, P7
+		anl a, r1
+		clr c
+		subb a, r1
+		jnz nieWypuszczajA
+		
 		
 KEY_B:
 		mov r1, #LINE_2
@@ -183,6 +191,15 @@ KEY_B:
 		mov IE, #00H ;wylaczenie obslugi przerwan
 		mov a, r0
 		mov r3, a ;odlozenie r0 do r3 (backup)
+		
+		;mozliwe, ze trzeba dorobic petle, ktora nie wypusci, dopoki B zostanie "odcisniete"
+		nieWypuszczajB:
+		mov a, P7
+		anl a, r1
+		clr c
+		subb a, r1
+		jnz nieWypuszczajB
+		
 		jmp KEY_A
 
 
