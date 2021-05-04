@@ -75,6 +75,12 @@ putdigitLCD:	mov b, #10
 putcharLCD:	LCDcharWR
 			ret
 
+delay:	mov r3, #0FFH
+dwa:		mov r4, #0FFH
+trzy:		djnz r4, trzy
+			djnz r3, dwa
+			ret
+
 keyascii:	mov dptr, #80EBH
 			mov a, #"0"
 			movx @dptr, a
@@ -175,6 +181,7 @@ FirstDigit:
 			clr c
 			subb a, r0
 			jnz czekaj11
+			acall delay
 			jmp SecondDigit
 			
 			Line2for1Digit:
@@ -205,6 +212,7 @@ FirstDigit:
 			clr c
 			subb a, r0
 			jnz czekaj21
+			acall delay
 			jmp SecondDigit
 			
 			Line3for1Digit:
@@ -235,6 +243,7 @@ FirstDigit:
 			clr c
 			subb a, r0
 			jnz czekaj31
+			acall delay
 			jmp SecondDigit
 			
 			Line4for1Digit:        ;TU BEDZIE TROCHE INACZEJ!!!!!!
@@ -265,6 +274,7 @@ FirstDigit:
 			clr c
 			subb a, r0
 			jnz czekaj41
+			acall delay
 			jmp SecondDigit
 
 goback1Digit:
@@ -304,6 +314,7 @@ SecondDigit:
 			clr c
 			subb a, r0
 			jnz czekaj12
+			acall delay
 			jmp Hashtag
 			
 			Line2for2Digit:
@@ -335,6 +346,7 @@ SecondDigit:
 			clr c
 			subb a, r0
 			jnz czekaj22
+			acall delay
 			jmp Hashtag
 			
 			Line3for2Digit:
@@ -366,6 +378,7 @@ SecondDigit:
 			clr c
 			subb a, r0
 			jnz czekaj32
+			acall delay
 			jmp Hashtag
 			
 			Line4for2Digit:        
@@ -397,6 +410,7 @@ SecondDigit:
 			clr c
 			subb a, r0
 			jnz czekaj42
+			acall delay
 			jmp Hashtag
 			
 goback2Digit:
@@ -425,6 +439,7 @@ Hashtag:
 			clr c
 			subb a, r0
 			jnz czekajHash
+			acall delay
 ;walidacja godziny
 			mov a, r1
 			clr c
@@ -434,6 +449,7 @@ Hashtag:
 			mov r5, a
 			mov a, #':'
 			acall putcharLCD
+			
 			jmp ThirdDigit
 			
 hourValidationIncorrect:
@@ -476,6 +492,7 @@ ThirdDigit:
 			clr c
 			subb a, r0
 			jnz czekaj13
+			acall delay
 			jmp FourthDigit
 			
 			Line2for3Digit:
@@ -506,6 +523,7 @@ ThirdDigit:
 			clr c
 			subb a, r0
 			jnz czekaj23
+			acall delay
 			jmp FourthDigit
 			
 			Line3for3Digit:
@@ -536,6 +554,7 @@ ThirdDigit:
 			clr c
 			subb a, r0
 			jnz czekaj33
+			acall delay
 			jmp FourthDigit
 			
 			Line4for3Digit:        ;TU BEDZIE TROCHE INACZEJ!!!!!!
@@ -566,12 +585,17 @@ ThirdDigit:
 			clr c
 			subb a, r0
 			jnz czekaj43
+			acall delay
 			jmp FourthDigit
 	
 goback3Digit:	
 ljmp Line1for3Digit
 
 FourthDigit:
+			mov b, #10			;mnozymy wartosc pierwszej cyfry przez 10
+			mov a, r1
+			mul ab              ;teraz w akumulatorze powinna byc dziesieciokrotnosc cyfry dziesiatek
+			mov r1, a
 			Line1for4Digit:
 			mov r0, #LINE_1
 			mov	a, r0
@@ -593,13 +617,15 @@ FourthDigit:
 			acall putcharLCD
 			clr c
 			subb a, #30h        ;konwertujemy kod ascii na cyfre
-			mov r1, a           ;dodajemy cyfre do bufora
+			add a, r1
+			mov r1, a           ;dodajemy bufor do cyfry jednosci, a nastepnie kopiujemy z powrotem do bufora
 			czekaj14:           ; nie wypuszczaj, dopoki klawisz nie zostanie "odcisniety"
 			mov a, P7
 			anl a, r0
 			clr c
 			subb a, r0
 			jnz czekaj14
+			acall delay
 			jmp Star
 			
 			Line2for4Digit:
@@ -623,13 +649,15 @@ FourthDigit:
 			acall putcharLCD
 			clr c
 			subb a, #30h        ;konwertujemy kod ascii na cyfre
-			mov r1, a           ;dodajemy cyfre do bufora
+			add a, r1
+			mov r1, a           ;dodajemy bufor do cyfry jednosci, a nastepnie kopiujemy z powrotem do bufora
 			czekaj24:           ; nie wypuszczaj, dopoki klawisz nie zostanie "odcisniety"
 			mov a, P7
 			anl a, r0
 			clr c
 			subb a, r0
 			jnz czekaj24
+			acall delay
 			jmp Star
 			
 			Line3for4Digit:
@@ -653,13 +681,15 @@ FourthDigit:
 			acall putcharLCD
 			clr c
 			subb a, #30h        ;konwertujemy kod ascii na cyfre
-			mov r1, a           ;dodajemy cyfre do bufora
+			add a, r1
+			mov r1, a           ;dodajemy bufor do cyfry jednosci, a nastepnie kopiujemy z powrotem do bufora
 			czekaj34:           ; nie wypuszczaj, dopoki klawisz nie zostanie "odcisniety"
 			mov a, P7
 			anl a, r0
 			clr c
 			subb a, r0
 			jnz czekaj34
+			acall delay
 			jmp Star
 			
 			Line4for4Digit:        ;TU BEDZIE TROCHE INACZEJ!!!!!!
@@ -683,13 +713,15 @@ FourthDigit:
 			acall putcharLCD
 			clr c
 			subb a, #30h        ;konwertujemy kod ascii na cyfre
-			mov r1, a           ;dodajemy cyfre do bufora
+			add a, r1
+			mov r1, a           ;dodajemy bufor do cyfry jednosci, a nastepnie kopiujemy z powrotem do bufora
 			czekaj44:           ; nie wypuszczaj, dopoki klawisz nie zostanie "odcisniety"
 			mov a, P7
 			anl a, r0
 			clr c
 			subb a, r0
 			jnz czekaj44
+			acall delay
 			jmp Star
 	
 goback4Digit:	
@@ -717,6 +749,7 @@ Star:
 			clr c
 			subb a, r0
 			jnz czekajStar
+			acall delay
 ;walidacja minuty
 			mov a, r1
 			clr c
