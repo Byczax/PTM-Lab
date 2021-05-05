@@ -440,7 +440,7 @@ Hashtag:
 			subb a, r0
 			jnz czekajHash
 			acall delay
-;walidacja godziny
+			;walidacja godziny
 			mov a, r1
 			clr c
 			subb a, #24
@@ -750,7 +750,7 @@ Star:
 			subb a, r0
 			jnz czekajStar
 			acall delay
-;walidacja minuty
+			;walidacja minuty
 			mov a, r1
 			clr c
 			subb a, #60
@@ -765,7 +765,6 @@ minuteValidationIncorrect:
 ljmp ThirdDigit	
 FINALLY:    RET
 			
-
 // wyznaczanie biezacej wartosci zegara i jego wyswietlanie na LCD
 ZEGAR:		INC R7				; licznik sekund
 			MOV A, R7			; obsluga sekund
@@ -831,8 +830,6 @@ START:	init_LCD
 		MOV TL0, #0B0H 			; stalej timera na 50ms
 		SETB TR0      			; timer start
 		MOV IE, #82H  			; przerwania wlacz
-		;MOV R5, #00H			; inicjacja zegara
-		;MOV R6, #00H
 		MOV R7, #0FFH
 		ACALL ZEGAR				; wyswietlenie zainicjowanego zegara
 		MOV A, #0FH
