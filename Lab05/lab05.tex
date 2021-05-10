@@ -110,14 +110,36 @@
 		\end{tabular}}
 \end{table}
 %----------------------------------------------------------------------------------------------------
-\section{Zadanie 1}
+\section{Zadanie}
 \subsection{Polecenie}
-
+We wszystkich programach prezentowanych na zajęciach występowało "zjawisko" przekształcania danych
+przychodzących z terminala na komputerze tak by reprezentowały rzeczywiście kody ASCII znaków.
+W ten sposób udało się rozwiązać problem, a w zasadzie zaadaptować się do nieznanej przyczyny, stałego
+"zniekształcenia - przekłamania" danych odbieranych portem szeregowym. Zadanie polega na analizie
+tego fragmentu kodu, w którym owe przekształcenie danych jest realizowane i opisaniu jakie działania są
+w nim podejmowane, na czym polega to "przekłamanie" danych i - ewentualnie - zaproponowanie innego
+- może lepszego / sprawniejszego - sposobu zrealizowania tej koniecznej korekty.
 \subsection{Rozwiązanie}
-\lstinputlisting{zad1.asm}
-\section{Zadanie 2}
-\subsection{Polecenie}
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{ccccccccccc}
+     $(1)$&$R_7$& $=$& $A_7$&$A_6$&$A_5$&$A_4$&$A_3$&$A_2$&$A_1$&$A_0$\\
+     $(2)$&$R_7$& $=$& $  0$&$  0$&$  0$&$  0$&$A_3$&$A_2$&$A_1$&$A_0$\\
+     $(3)$&$A  $& $=$& $A_7$&$A_6$&$A_5$&$  0$&$  0$&$  0$&$  0$&$  0$\\
+     $(4)$&$A  $& $=$& $  0$&$A_7$&$A_6$&$A_5$&$A_4$&$  0$&$  0$&$  0$\\
+   $(4.5)$&$A  $& $=$& $  0$&$A_7$&$A_6$&$A_5$&$  0$&$  0$&$  0$&$  0$\\
+     $(5)$&$R_7$& $=$& $  0$&$A_7$&$A_6$&$A_5$&$A_3$&$A_2$&$A_1$&$A_0$
+\end{tabular}
+}
+\end{table}
 
-\subsection{Rozwiązanie}
-\lstinputlisting{zad2.asm}
+Kod wykonuje następujące operacje na akumulatorze:
+\begin{itemize}
+     \item[2] Pozostaw 4 młodsze bity bez zmian
+     \item[$3, 4$] trzy najstarsze bity przesuń na miejsce swojego młodszego "sąsiada"
+     \item[5] Operacja "niszczy" wartość piątego bitu ($A_4$) a na najstarszej pozycji umieszcza zero.
+\end{itemize}
+\lstinputlisting{kod.asm}
+
 \end{document}
