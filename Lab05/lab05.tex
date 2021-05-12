@@ -37,7 +37,7 @@
    {
     deletekeywords={mov,inc,org, end, nop, jmp, jnb, jnc, pop, jz, push, ret, jb, jnz, setb, add, mul},
     morekeywords={[3]a,b,r0,r1,r2,r3,r4,r5,r6,r7,\$,c,dptr, @dptr, @a, 00, acc, ab, p1, p2, p3 ,p4, p5, p6 ,p7 , p8, p9, dpl, dph},
-    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb, jnz, anl, cpl, setb, add, mul}   
+    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb, jnz, anl, cpl, setb, add, mul, rrc, rr}   
     }
 
                 
@@ -110,8 +110,7 @@
 		\end{tabular}}
 \end{table}
 %----------------------------------------------------------------------------------------------------
-\section{Zadanie}
-\subsection{Polecenie}
+\section{Polecenie}
 We wszystkich programach prezentowanych na zajęciach występowało "zjawisko" przekształcania danych
 przychodzących z terminala na komputerze tak by reprezentowały rzeczywiście kody ASCII znaków.
 W ten sposób udało się rozwiązać problem, a w zasadzie zaadaptować się do nieznanej przyczyny, stałego
@@ -119,27 +118,54 @@ W ten sposób udało się rozwiązać problem, a w zasadzie zaadaptować się do
 tego fragmentu kodu, w którym owe przekształcenie danych jest realizowane i opisaniu jakie działania są
 w nim podejmowane, na czym polega to "przekłamanie" danych i - ewentualnie - zaproponowanie innego
 - może lepszego / sprawniejszego - sposobu zrealizowania tej koniecznej korekty.
-\subsection{Rozwiązanie}
-\begin{table}[H]
-\centering
-\resizebox{\textwidth}{!}{
-\begin{tabular}{ccccccccccc}
-     $(1)$&$R_7$& $=$& $A_7$&$A_6$&$A_5$&$A_4$&$A_3$&$A_2$&$A_1$&$A_0$\\
-     $(2)$&$R_7$& $=$& $  0$&$  0$&$  0$&$  0$&$A_3$&$A_2$&$A_1$&$A_0$\\
-     $(3)$&$A  $& $=$& $A_7$&$A_6$&$A_5$&$  0$&$  0$&$  0$&$  0$&$  0$\\
-     $(4)$&$A  $& $=$& $  0$&$A_7$&$A_6$&$A_5$&$A_4$&$  0$&$  0$&$  0$\\
-   $(4.5)$&$A  $& $=$& $  0$&$A_7$&$A_6$&$A_5$&$  0$&$  0$&$  0$&$  0$\\
-     $(5)$&$R_7$& $=$& $  0$&$A_7$&$A_6$&$A_5$&$A_3$&$A_2$&$A_1$&$A_0$
-\end{tabular}
-}
-\end{table}
-
-Kod wykonuje następujące operacje na akumulatorze:
-\begin{itemize}
-     \item[2] Pozostaw 4 młodsze bity bez zmian
-     \item[$3, 4$] trzy najstarsze bity przesuń na miejsce swojego młodszego "sąsiada"
-     \item[5] Operacja "niszczy" wartość piątego bitu ($A_4$) a na najstarszej pozycji umieszcza zero.
-\end{itemize}
+\section{Analiza oryginalnego kodu}
 \lstinputlisting{kod.asm}
+W kolejnych instrukcjach zawartości rejestrów zmieniają się następująco:\\
+\emph{(symbole $A_7-A_0$ oznaczają wartości bitów stanowiących początkową zawartość akumulatora, od najstarszego do najmłodszego)}
+
+\begin{table}[H]
+	\centering
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{ccccccccccc}
+			$(1)$ & $R_7|A$ & $=$ & $A_7$ & $A_6$ & $A_5$ & $A_4$ & $A_3$ & $A_2$ & $A_1$ & $A_0$ \\
+			$(2)$ & $R_7$ & $=$ & $  0$ & $  0$ & $  0$ & $  0$ & $A_3$ & $A_2$ & $A_1$ & $A_0$ \\
+			$(3)$ & $A  $ & $=$ & $  0$ & $A_7$ & $A_6$ & $A_5$ & $A_4$ & $A_3$ & $A_2$ & $A_1$ \\
+			$(4)$ & $A  $ & $=$ & $  0$ & $A_7$ & $A_6$ & $A_5$ & $  0$ & $  0$ & $  0$ & $  0$ \\
+			$(5)$ & $R_7$ & $=$ & $  0$ & $A_7$ & $A_6$ & $A_5$ & $A_3$ & $A_2$ & $A_1$ & $A_0$
+		\end{tabular}
+	}
+\end{table}
+W wyniku podanej konwersji, młodszy półbajt akumulatora pozostał bez zmian, natomiast w starszym półbajcie trzy najstarsze bity uległy przesunięciu na młodszą pozycję.
+Na pozycji najstarszej pojawiło się \textbf{0}, a wartość \textbf{$A_4$} uległa destrukcji.
+\clearpage
+\section{Alternatywny kod}
+Kod można uprościć o jedną instrukcję i pozbyć się tym samym wykorzystania bitu carry, zamieniając kolejność instrukcji:
+\lstinputlisting{alter.asm}
+\begin{table}[H]
+	\centering
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{ccccccccccc}
+			$(1)$ & $R_7|A$ & $=$ & $A_7$ & $A_6$ & $A_5$ & $A_4$ & $A_3$ & $A_2$ & $A_1$ & $A_0$ \\
+			$(2)$ & $R_7$ & $=$ & $  0$ & $  0$ & $  0$ & $  0$ & $A_3$ & $A_2$ & $A_1$ & $A_0$ \\
+			$(3)$ & $A  $ & $=$ & $A_7$ & $A_6$ & $A_5$ & $  0$ & $  0$ & $  0$ & $  0$ & $  0$ \\
+			$(4)$ & $A  $ & $=$ & $  0$ & $A_7$ & $A_6$ & $A_5$ & $  0$ & $  0$ & $  0$ & $  0$ \\
+			$(5)$ & $R_7$ & $=$ & $  0$ & $A_7$ & $A_6$ & $A_5$ & $A_3$ & $A_2$ & $A_1$ & $A_0$
+		\end{tabular}
+	}
+\end{table}
+Kod ASCII wykorzystuje siedem młodszych bitów bajtu.
+Wszystkie bajty wykorzystane do reprezentacji mają na najstarszej pozycji bit o wartości 0.
+Kody powyżej realizują wyzerowanie najstarszego bitu, a także przesunięcie bitowe starszej części.\\
+O ile przesunięcie bitowe można zaniedbać, najstarszy bit akumulatora można wyzerować jedną instrukcją:
+\begin{lstlisting}
+                              CLR ACC.7
+\end{lstlisting}
+% Kod wykonuje następujące operacje na akumulatorze:
+% \begin{itemize}
+%      \item[2] Pozostaw 4 młodsze bity bez zmian
+%      \item[$3, 4$] trzy najstarsze bity przesuń na miejsce swojego młodszego "sąsiada"
+%      \item[5] Operacja "niszczy" wartość piątego bitu ($A_4$) a na najstarszej pozycji umieszcza zero.
+% \end{itemize}
+
 
 \end{document}
