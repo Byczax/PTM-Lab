@@ -138,7 +138,8 @@ W kolejnych instrukcjach zawartości rejestrów zmieniają się następująco:\\
 W wyniku podanej konwersji, młodszy półbajt akumulatora pozostał bez zmian, natomiast w starszym półbajcie trzy najstarsze bity uległy przesunięciu na młodszą pozycję.
 Na pozycji najstarszej pojawiło się \textbf{0}, a wartość \textbf{$A_4$} uległa destrukcji.
 \clearpage
-\section{Alternatywny kod}
+\section{Alternatywne rozwiązania}
+\subsection{Rozwiązanie nr.1}
 Kod można uprościć o jedną instrukcję i pozbyć się tym samym wykorzystania bitu carry, zamieniając kolejność instrukcji:
 \lstinputlisting{alter.asm}
 \begin{table}[H]
@@ -153,7 +154,7 @@ Kod można uprościć o jedną instrukcję i pozbyć się tym samym wykorzystani
 		\end{tabular}
 	}
 \end{table}
-\section{Alternatywny kod 2}
+\subsection{Rozwiązanie nr.2}
 Kod ASCII wykorzystuje siedem młodszych bitów bajtu.
 Wszystkie bajty wykorzystane do reprezentacji mają na najstarszej pozycji bit o wartości 0.
 Kody powyżej realizują wyzerowanie najstarszego bitu, a także przesunięcie bitowe starszej części.\\
