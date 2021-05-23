@@ -77,9 +77,9 @@
 \node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
 
 %-----------------------SEKCJA DANYCH----------------------------------
-\def\tytul{Timery} %<<< tytuł ćwiczenia
-\def\nrcw{5} %<<< numer ćwiczenia
-\def\data{22 Kwietnia 2021} %<< data wykonania
+\def\tytul{RTC i inne atrakcje} %<<< tytuł ćwiczenia
+\def\nrcw{7} %<<< numer ćwiczenia
+\def\data{20 Maja 2021} %<< data wykonania
 \def\prowadzacy{dr inż. Jacek Mazurkiewicz} %<<<prowadzący
 \def\nrgrupy{B} %<<<numer grupy
 \def\tworcy{Maciej Byczko\\Bartosz Matysiak} %<<< autorzy
@@ -112,10 +112,18 @@
 %----------------------------------------------------------------------------------------------------
 \section{Zadanie 1}
 \subsection{Polecenie}
+Rozbudować finalną postać programu o mechanizmy kontroli zakresu wpisanych w inicjujący łańcuch ASCII
+danych. Dopuszczalny zakres dla sekund i minut: od 00 do 59, dla godzin: od 00 do 23, dla miesięcy:
+od 01 do 12, dla dni: od 01 do 31. Mechanizm kontroli ma działać w zakresie procedury inicjalizacji czasu i daty.
+W przypadku wykrycia danych spoza wymaganego zakresu inicjalizacja ma wprowadzić minimalne dopuszczalne
+wartości dla danej pozycji czasu lub daty.
 \subsection{Rozwiązanie}
 \lstinputlisting{zad1.asm}
 \section{Zadanie 2}
 \subsection{Polecenie}
+Zadanie dodatkowe. Opisany powyżej mechanizm kontroli rozbudować o sprawdzanie poprawnej korelacji
+danej dotyczącej miesiąca i dnia. Innymi słowy dopuszczalny zakres wartości dnia ma uwzględniać maksymalną
+liczbę dni danego miesiąca.
 \subsection{Rozwiązanie}
 \lstinputlisting{zad2.asm}
 \end{document}
