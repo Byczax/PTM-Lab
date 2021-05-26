@@ -191,6 +191,44 @@ disp_date:
 	acall week_word
 	RET
 
+hourValidationIncorrect:
+	mov dptr, #RTChx
+	movx @dptr, #0
+	mov dptr, #RTCxh
+	movx @dptr, #0
+ret
+
+minuteValidationIncorrect:
+	mov dptr, #RTCmx
+	movx @dptr, #0
+	mov dptr, #RTCxm
+	movx @dptr, #0
+ret
+
+secondsValidationIncorrect:
+	mov dptr, #RTCsx
+	movx @dptr, #0
+	mov dptr, #RTCxs
+	movx @dptr, #0
+ret
+
+saveValue1:
+	mov r0, a ; zapamietanie wartości a
+	clr a ;  wyczyszczenie rejestru r1 za pomoca a
+	mov r1, a
+	mov a, r0; przywrocenie wartosci a
+	add a, r1 ; suma z rejestrem r1
+	mov r1, a; zapisanie sumy
+ret
+
+saveValue2:
+	mov r0, a ; zapamietanie wartości a
+	add a, r1 ; suma z rejestrem r1
+	mov r1, a; zapisanie sumy
+	mov a, r0; przywrocenie wartosci a
+ret
+
+
 // inicjalizacja czasu
 czas_start:
 		mov DPTR, #RTCpf ; 24h zegar
@@ -202,6 +240,9 @@ czas_start:
 		mov dptr, #Czas
 		movc a, @a+dptr	; dziesiatki godzin
 		subb a, #30h
+		
+		acall saveValue1
+
 		push dph
 		push dpl
 		mov dptr, #RTChx
@@ -212,10 +253,20 @@ czas_start:
 		clr a
 		movc a, @a+dptr	; jednosci godzin
 		subb a, #30h
+
+		acall saveValue2
+
 		push dph
 		push dpl
 		mov dptr, #RTCxh
 		movx @dptr, a
+
+		mov a, r1
+		clr c
+		subb a, #24
+		jc hourValidationCorrect
+		acall hourValidationIncorrect
+	hourValidationCorrect:
 		pop dpl
 		pop dph
 		inc dptr
@@ -225,6 +276,9 @@ czas_start:
 		clr a
 		movc a, @a+dptr	; dziesiatki minut
 		subb a, #30h
+
+		acall saveValue1
+
 		push dph
 		push dpl
 		mov dptr, #RTCmx
@@ -235,10 +289,20 @@ czas_start:
 		clr a
 		movc a, @a+dptr	; jednosci minut
 		subb a, #30h
+
+		acall saveValue2
+		
 		push dph
 		push dpl
 		mov dptr, #RTCxm
 		movx @dptr, a
+
+		mov a, r1
+		clr c
+		subb a, #60
+		jc minuteValidationCorrect
+		acall minuteValidationIncorrect
+minuteValidationCorrect:
 		pop dpl
 		pop dph		
 		inc dptr
@@ -248,6 +312,9 @@ czas_start:
 		clr a
 		movc a, @a+dptr	; dziesiatki sekund
 		subb a, #30h
+
+		acall saveValue1
+
 		push dph
 		push dpl
 		mov dptr, #RTCsx
@@ -258,13 +325,65 @@ czas_start:
 		clr a
 		movc a, @a+dptr	; jednosci sekund
 		subb a, #30h
+
+		acall saveValue2
+
 		push dph
 		push dpl
 		mov dptr, #RTCxs
 		movx @dptr, a
+
+		mov a, r1
+		clr c
+		subb a, #60
+		jc secondsValidationCorrect
+		acall secondsValidationIncorrect
+	secondsValidationCorrect:
 		pop dpl
 		pop dph
 		ret
+daysValidationIncorrect:
+	mov dptr, #RTCdx
+	movx @dptr, #0
+	mov dptr, #RTCxd
+	movx @dptr, #1
+	// jezeli poprawiamy miesiac to zapiszmy jego nowo wersje czyli styczen
+	mov r0, a
+	mov a, #01
+	mov r2, a
+	mov a, r0
+ret
+
+monthsValidationIncorrect:
+	mov dptr, #RTCnx
+	movx @dptr, #0
+	mov dptr, #RTCxn
+	movx @dptr, #1
+	mov r0, a
+	mov a, r1
+	mov r3, a
+	mov a, r0
+ret
+
+dayMonthValidation:
+	; pod r2 kryje sie zapis dni
+	; pod r3 kryje sie zapis miesiaca
+	
+ret
+
+saveDays:
+	mov r0, a
+	mov a, r1
+	mov r2, a
+	mov a, r0
+ret
+
+saveMonth:
+	mov r0, a
+	mov a, r1
+	mov r3, a
+	mov a, r0
+ret
 
 // inicjalizacja daty
 data_start:	clr c
@@ -272,6 +391,9 @@ data_start:	clr c
 		mov dptr, #Dzien
 		movc a, @a+dptr	; dziesiatki dni
 		subb a, #30h
+
+		acall saveValue1
+
 		push dph
 		push dpl
 		mov dptr, #RTCdx
@@ -282,10 +404,23 @@ data_start:	clr c
 		clr a
 		movc a, @a+dptr	; jednosci dni
 		subb a, #30h
+
+		acall saveValue2
+
+		acall saveDays
+
 		push dph
 		push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
+
+		mov a, r1
+		clr c
+		subb a, #32
+		jc daysValidationCorrect
+		acall daysValidationIncorrect
+	daysValidationCorrect:
+
 		pop dpl
 		pop dph
 		inc dptr
@@ -295,6 +430,9 @@ data_start:	clr c
 		clr a
 		movc a, @a+dptr	; dziesiatki miesiaca
 		subb a, #30h
+
+		acall saveValue1
+
 		push dph
 		push dpl
 		mov dptr, #RTCnx
@@ -305,10 +443,25 @@ data_start:	clr c
 		clr a
 		movc a, @a+dptr	; jednosci miesiaca
 		subb a, #30h
+
+		acall saveValue2
+
+		acall saveMonth
+
 		push dph
 		push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
+
+		mov a, r1
+		clr c
+		subb a, #13
+		jc monthsValidationCorrect
+		acall monthsValidationIncorrect
+		jmp noCheck
+	monthsValidationCorrect:
+	acall dayMonthValidation
+noCheck:
 		pop dpl
 		pop dph
 		inc dptr
