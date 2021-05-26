@@ -213,12 +213,12 @@ secondsValidationIncorrect:
 ret
 
 saveValue1:
+	mov b, #10
 	mov r0, a ; zapamietanie wartości a
-	clr a ;  wyczyszczenie rejestru r1 za pomoca a
-	mov r1, a
+	mul ab
+	mov r1, a ; wczytanie wartosci a do r1
 	mov a, r0; przywrocenie wartosci a
-	add a, r1 ; suma z rejestrem r1
-	mov r1, a; zapisanie sumy
+
 ret
 
 saveValue2:
@@ -234,6 +234,7 @@ czas_start:
 		mov DPTR, #RTCpf ; 24h zegar
 		movx a, @DPTR
 		orl a, #04H
+
 		movx @DPTR, a
 		clr c
 		clr a
@@ -267,6 +268,7 @@ czas_start:
 		jc hourValidationCorrect
 		acall hourValidationIncorrect
 	hourValidationCorrect:
+
 		pop dpl
 		pop dph
 		inc dptr
@@ -368,7 +370,75 @@ ret
 dayMonthValidation:
 	; pod r2 kryje sie zapis dni
 	; pod r3 kryje sie zapis miesiaca
-	
+	mov a, r3
+	clr c
+	subb a, #01
+	jz month31
+	mov a, r3
+	clr c
+	subb a, #02
+	jz month28
+	mov a, r3
+	clr c
+	subb a, #03
+	jz month31
+	mov a, r3
+	clr c
+	subb a, #04
+	jz month30
+	mov a, r3
+	clr c
+	subb a, #05
+	jz month31
+	mov a, r3
+	clr c
+	subb a, #06
+	jz month30
+	mov a, r3
+	clr c
+	subb a, #07
+	jz month31
+	mov a, r3
+	clr c
+	subb a, #08
+	jz month31
+	mov a, r3
+	clr c
+	subb a, #09
+	jz month30
+	mov a, r3
+	clr c
+	subb a, #10
+	jz month31
+	mov a, r3
+	clr c
+	subb a, #11
+	jz month30
+	mov a, r3
+	clr c
+	subb a, #12
+	jz month31
+ret
+
+month31:
+	mov a, r3
+	clr c
+	subb a, #32
+	jz acall monthsValidationIncorrect
+	jmp noCheck
+month30:
+	mov a, r3
+	clr c
+	subb a, #31
+	jz acall monthsValidationIncorrect
+	jmp noCheck
+ret
+month28:
+	mov a, r3
+	clr c
+	subb a, #29
+	jz acall monthsValidationIncorrect
+	jmp noCheck
 ret
 
 saveDays:
