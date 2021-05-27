@@ -349,22 +349,22 @@ daysValidationIncorrect:
 	movx @dptr, #0
 	mov dptr, #RTCxd
 	movx @dptr, #1
-	// jezeli poprawiamy miesiac to zapiszmy jego nowo wersje czyli styczen
-	mov r0, a
-	mov a, #01
-	mov r2, a
-	mov a, r0
+	// jezeli poprawiamy dzien to wczytaj
+	; mov r0, a
+	; mov a, #01
+	; mov r2, a
+	; mov a, r0
 ret
 
-monthsValidationIncorrect:
+monthsValidationIncorrect: ; wykonaj jezeli wartosc miesiaca jest niepoprawna
 	mov dptr, #RTCnx
-	movx @dptr, #0
+	movx @dptr, #0 ; ustaw wartosc dziesiatek na 0
 	mov dptr, #RTCxn
-	movx @dptr, #1
-	mov r0, a
-	mov a, r1
-	mov r3, a
-	mov a, r0
+	movx @dptr, #1 ; ustaw wartosc jednosci na 1 -> styczen
+	mov r0, a ; przechowaj wartosc akumulatora
+	mov a, #01 ; wczytaj wartosc 01 = Styczen
+	mov r3, a ; zapisz nowa wartosc do r3
+	mov a, r0 ; przywroc wartosc akumulatora
 ret
 
 dayMonthValidation:
@@ -372,15 +372,15 @@ dayMonthValidation:
 	; pod r3 kryje sie zapis miesiaca
 	mov a, r3
 	clr c
-	subb a, #01
+	subb a, #01 ; styczen = 31 dni
 	jz month31
 	mov a, r3
 	clr c
-	subb a, #02
+	subb a, #02 ; luty = 28 dni
 	jz month28
 	mov a, r3
 	clr c
-	subb a, #03
+	subb a, #03 ; marzec = 31 dni
 	jz month31
 	mov a, r3
 	clr c
@@ -421,38 +421,39 @@ dayMonthValidation:
 ret
 
 month31:
-	mov a, r3
-	clr c
-	subb a, #32
-	jz acall monthsValidationIncorrect
+	// mozna poprawic sprawdzanie poniewaz bylo sprawdzane wczesniej
+	; mov a, r3
+	; clr c
+	; subb a, #32
+	; jz monthsValidationIncorrect
 	jmp noCheck
 month30:
 	mov a, r3
 	clr c
 	subb a, #31
-	jz acall monthsValidationIncorrect
+	jz monthsValidationIncorrect
 	jmp noCheck
 ret
 month28:
 	mov a, r3
 	clr c
 	subb a, #29
-	jz acall monthsValidationIncorrect
+	jz monthsValidationIncorrect
 	jmp noCheck
 ret
 
 saveDays:
-	mov r0, a
-	mov a, r1
-	mov r2, a
-	mov a, r0
+	mov r0, a ; przechowaj wartosc akumulatora
+	mov a, r1 ; wczytaj wartosc r1 (ilosc dni)
+	mov r2, a ; zapisz ilosc dni do r2
+	mov a, r0 ; przywroc poprzednia wartosc akumulatora
 ret
 
 saveMonth:
-	mov r0, a
-	mov a, r1
-	mov r3, a
-	mov a, r0
+	mov r0, a ; przechowaj wartosc akumulatora 
+	mov a, r1 ; wczytaj wartosc r1 (wartosc miesiaca)
+	mov r3, a ; zapisz ilosc dni do r2
+	mov a, r0 ; przywroc poprzednia wartosc akumulatora
 ret
 
 // inicjalizacja daty
@@ -462,7 +463,7 @@ data_start:	clr c
 		movc a, @a+dptr	; dziesiatki dni
 		subb a, #30h
 
-		acall saveValue1
+		acall saveValue1; zapisz wartosc dziesiatek
 
 		push dph
 		push dpl
@@ -475,20 +476,21 @@ data_start:	clr c
 		movc a, @a+dptr	; jednosci dni
 		subb a, #30h
 
-		acall saveValue2
+		acall saveValue2; zapisz wartosc jednosci
 
-		acall saveDays
+		acall saveDays ; zapisz wartosc dnia
 
 		push dph
 		push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 
-		mov a, r1
-		clr c
-		subb a, #32
+		// sprawdzenie czy zakres jest poprawny
+		mov a, r1 ; wczytaj zapisane wczesniej wartosc dnia
+		clr c; wyczysc c
+		subb a, #32; odejmij 32, jezeli c zmieni wartosc to znaczy ze wartosc jest prawidlowa
 		jc daysValidationCorrect
-		acall daysValidationIncorrect
+		acall daysValidationIncorrect ; jezeli wartosc jest niepoprawna to wywolaj poprawke
 	daysValidationCorrect:
 
 		pop dpl
@@ -501,7 +503,7 @@ data_start:	clr c
 		movc a, @a+dptr	; dziesiatki miesiaca
 		subb a, #30h
 
-		acall saveValue1
+		acall saveValue1; zapisz wartosc dziesiatek
 
 		push dph
 		push dpl
@@ -514,15 +516,16 @@ data_start:	clr c
 		movc a, @a+dptr	; jednosci miesiaca
 		subb a, #30h
 
-		acall saveValue2
+		acall saveValue2 ; zapisz wartosc jednosci
 
-		acall saveMonth
+		acall saveMonth ; zapisz wczytana wartosc miesiaca
 
 		push dph
 		push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
 
+		// sprawdz czy wpisany miesiac jest poprawny
 		mov a, r1
 		clr c
 		subb a, #13
@@ -530,7 +533,7 @@ data_start:	clr c
 		acall monthsValidationIncorrect
 		jmp noCheck
 	monthsValidationCorrect:
-	acall dayMonthValidation
+	acall dayMonthValidation ; gdy mamy wczytany miesiac to sprawdzmy jeszcze raz poprawnosc dni w zaleznosci od miesiaca
 noCheck:
 		pop dpl
 		pop dph

@@ -35,9 +35,9 @@
    [x86masm]{Assembler} % based on the "x86masm" dialect
    % nie wolno zamieniać kolejności deklaracji morekeywords
    {
-    deletekeywords={mov,inc,org, end, nop, jmp, jnb, jnc, pop, jz, push, ret, jb, jnz, setb, add, mul},
+    deletekeywords={mov,inc,org, end, nop, jmp, jnb, jnc, pop, jz, push, ret, jb, jnz, setb, add, mul, jc},
     morekeywords={[3]a,b,r0,r1,r2,r3,r4,r5,r6,r7,\$,c,dptr, @dptr, @a, 00, acc, ab, p1, p2, p3 ,p4, p5, p6 ,p7 , p8, p9, dpl, dph},
-    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb, jnz, anl, cpl, setb, add, mul}   
+    morekeywords={[2]subb, clr, ljmp, movx,end,mov,inc, nop, jmp, end, orl, jnb, jnc, djnz, sjmp, pop, acall, jz, push, ret, jb, jnz, anl, cpl, setb, add, mul, movc,jc}   
     }
 
                 
@@ -110,20 +110,23 @@
 		\end{tabular}}
 \end{table}
 %----------------------------------------------------------------------------------------------------
-\section{Zadanie 1}
+\section{Zadanie 1 oraz Zadanie 2}
 \subsection{Polecenie}
+\subsubsection{Zadanie 1}
 Rozbudować finalną postać programu o mechanizmy kontroli zakresu wpisanych w inicjujący łańcuch ASCII
 danych. Dopuszczalny zakres dla sekund i minut: od 00 do 59, dla godzin: od 00 do 23, dla miesięcy:
 od 01 do 12, dla dni: od 01 do 31. Mechanizm kontroli ma działać w zakresie procedury inicjalizacji czasu i daty.
 W przypadku wykrycia danych spoza wymaganego zakresu inicjalizacja ma wprowadzić minimalne dopuszczalne
 wartości dla danej pozycji czasu lub daty.
-\subsection{Rozwiązanie}
-\lstinputlisting{zad1.asm}
-\section{Zadanie 2}
-\subsection{Polecenie}
+\subsubsection{Zadanie 2}
 Zadanie dodatkowe. Opisany powyżej mechanizm kontroli rozbudować o sprawdzanie poprawnej korelacji
 danej dotyczącej miesiąca i dnia. Innymi słowy dopuszczalny zakres wartości dnia ma uwzględniać maksymalną
 liczbę dni danego miesiąca.
 \subsection{Rozwiązanie}
-\lstinputlisting{zad2.asm}
+\lstinputlisting{zad1.asm}
+% \section{Zadanie 2}
+% \subsection{Polecenie}
+
+% \subsection{Rozwiązanie}
+% \lstinputlisting{zad2.asm}
 \end{document}
