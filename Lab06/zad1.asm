@@ -192,24 +192,33 @@ disp_date:
 	RET
 
 hourValidationIncorrect:
+	mov r0, a
+	mov a, #0
 	mov dptr, #RTChx
-	movx @dptr, #0
+	movx @dptr, a
 	mov dptr, #RTCxh
-	movx @dptr, #0
+	movx @dptr, a
+	mov a, r0
 ret
 
 minuteValidationIncorrect:
+	mov r0, a
+	mov a, #0
 	mov dptr, #RTCmx
-	movx @dptr, #0
+	movx @dptr, a
 	mov dptr, #RTCxm
-	movx @dptr, #0
+	movx @dptr, a
+	mov a, r0
 ret
 
 secondsValidationIncorrect:
+	mov r0, a
+	mov a, #0
 	mov dptr, #RTCsx
-	movx @dptr, #0
+	movx @dptr, a
 	mov dptr, #RTCxs
-	movx @dptr, #0
+	movx @dptr, a
+	mov a, r0
 ret
 
 saveValue1:
@@ -345,10 +354,14 @@ minuteValidationCorrect:
 		pop dph
 		ret
 daysValidationIncorrect:
+	mov r0, a
+	mov a, #0
 	mov dptr, #RTCdx
-	movx @dptr, #0
+	movx @dptr, a
 	mov dptr, #RTCxd
-	movx @dptr, #1
+	mov a, #1
+	movx @dptr, a
+	mov a, r0
 	// jezeli poprawiamy dzien to wczytaj
 	; mov r0, a
 	; mov a, #01
@@ -357,11 +370,14 @@ daysValidationIncorrect:
 ret
 
 monthsValidationIncorrect: ; wykonaj jezeli wartosc miesiaca jest niepoprawna
+	mov r0, a
+	mov a, #0
 	mov dptr, #RTCnx
-	movx @dptr, #0 ; ustaw wartosc dziesiatek na 0
+	movx @dptr, a ; ustaw wartosc dziesiatek na 0
 	mov dptr, #RTCxn
-	movx @dptr, #1 ; ustaw wartosc jednosci na 1 -> styczen
-	mov r0, a ; przechowaj wartosc akumulatora
+	mov a, #1
+	movx @dptr, a ; ustaw wartosc jednosci na 1 -> styczen
+	; mov r0, a ; przechowaj wartosc akumulatora
 	mov a, #01 ; wczytaj wartosc 01 = Styczen
 	mov r3, a ; zapisz nowa wartosc do r3
 	mov a, r0 ; przywroc wartosc akumulatora
