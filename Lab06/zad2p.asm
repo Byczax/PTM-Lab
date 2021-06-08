@@ -1,8 +1,8 @@
 ljmp start
 	
-LCDstatus  equ 0FF2EH       ; adres do odczytu gotowosci LCD
-LCDcontrol equ 0FF2CH       ; adres do podania bajtu sterujacego LCD
-LCDdataWR  equ 0FF2DH       ; adres do podania kodu ASCII na LCD
+LCDstatus  equ 0FF2EH	   ; adres do odczytu gotowosci LCD
+LCDcontrol equ 0FF2CH	   ; adres do podania bajtu sterujacego LCD
+LCDdataWR  equ 0FF2DH	   ; adres do podania kodu ASCII na LCD
 
 RTCxs equ 0FF00H	; seconds
 RTCsx equ 0FF01H
@@ -20,11 +20,11 @@ RTCdw equ 0FF0CH	; day of week
 RTCpf equ 0FF0FH
 
 // bajty sterujace LCD, inne dostepne w opisie LCD na stronie WWW
-#define  HOME     0x80     // put cursor to second line  
-#define  INITDISP 0x38     // LCD init (8-bit mode)  
-#define  HOM2     0xc0     // put cursor to second line  
-#define  LCDON    0x0e     // LCD nn, cursor off, blinking off
-#define  CLEAR    0x01     // LCD display clear
+#define  HOME	 0x80	 // put cursor to second line  
+#define  INITDISP 0x38	 // LCD init (8-bit mode)  
+#define  HOM2	 0xc0	 // put cursor to second line  
+#define  LCDON	0x0e	 // LCD nn, cursor off, blinking off
+#define  CLEAR	0x01	 // LCD display clear
 
 org 0100H
 	Czas: db "13:70:70"
@@ -35,36 +35,36 @@ org 0100H
 	TwentyL: db 00
 		
 // macro do wprowadzenia bajtu sterujacego na LCD
-LCDcntrlWR MACRO x          ; x – parametr wywolania macra – bajt sterujacy
-           LOCAL loop       ; LOCAL oznacza ze etykieta loop moze sie powtórzyc w programie
+LCDcntrlWR MACRO x		  ; x – parametr wywolania macra – bajt sterujacy
+		   LOCAL loop	   ; LOCAL oznacza ze etykieta loop moze sie powtórzyc w programie
 loop: MOV  DPTR,#LCDstatus  ; DPTR zaladowany adresem statusu
-      MOVX A,@DPTR          ; pobranie bajtu z biezacym statusem LCD
-      JB   ACC.7,loop       ; testowanie najstarszego bitu akumulatora
-                            ; – wskazuje gotowosc LCD
-      MOV  DPTR,#LCDcontrol ; DPTR zaladowany adresem do podania bajtu sterujacego
-      MOV  A, x             ; do akumulatora trafia argument wywolania macra–bajt sterujacy
-      MOVX @DPTR,A          ; bajt sterujacy podany do LCD – zadana akcja widoczna na LCD
-      ENDM
+	  MOVX A,@DPTR		  ; pobranie bajtu z biezacym statusem LCD
+	  JB   ACC.7,loop	   ; testowanie najstarszego bitu akumulatora
+							; – wskazuje gotowosc LCD
+	  MOV  DPTR,#LCDcontrol ; DPTR zaladowany adresem do podania bajtu sterujacego
+	  MOV  A, x			 ; do akumulatora trafia argument wywolania macrabajt sterujacy
+	  MOVX @DPTR,A		  ; bajt sterujacy podany do LCD – zadana akcja widoczna na LCD
+	  ENDM
 	  
 // macro do wypisania znaku ASCII na LCD, znak ASCII przed wywolaniem macra ma byc w A
 LCDcharWR MACRO
-      LOCAL tutu            ; LOCAL oznacza ze etykieta tutu moze sie powtórzyc w programie
-      PUSH ACC              ; odlozenie biezacej zawartosci akumulatora na stos
+	  LOCAL tutu			; LOCAL oznacza ze etykieta tutu moze sie powtórzyc w programie
+	  PUSH ACC			  ; odlozenie biezacej zawartosci akumulatora na stos
 tutu: MOV  DPTR,#LCDstatus  ; DPTR zaladowany adresem statusu
-      MOVX A,@DPTR          ; pobranie bajtu z biezacym statusem LCD
-      JB   ACC.7,tutu       ; testowanie najstarszego bitu akumulatora
-                            ; – wskazuje gotowosc LCD
-      MOV  DPTR,#LCDdataWR  ; DPTR zaladowany adresem do podania bajtu sterujacego
-      POP  ACC              ; w akumulatorze ponownie kod ASCII znaku na LCD
-      MOVX @DPTR,A          ; kod ASCII podany do LCD – znak widoczny na LCD
-      ENDM
+	  MOVX A,@DPTR		  ; pobranie bajtu z biezacym statusem LCD
+	  JB   ACC.7,tutu	   ; testowanie najstarszego bitu akumulatora
+							; – wskazuje gotowosc LCD
+	  MOV  DPTR,#LCDdataWR  ; DPTR zaladowany adresem do podania bajtu sterujacego
+	  POP  ACC			  ; w akumulatorze ponownie kod ASCII znaku na LCD
+	  MOVX @DPTR,A		  ; kod ASCII podany do LCD – znak widoczny na LCD
+	  ENDM
 	  
 // macro do inicjalizacji wyswietlacza – bez parametrów
 init_LCD MACRO
-         LCDcntrlWR #INITDISP ; wywolanie macra LCDcntrlWR – inicjalizacja LCD
-         LCDcntrlWR #CLEAR    ; wywolanie macra LCDcntrlWR – czyszczenie LCD
-         LCDcntrlWR #LCDON    ; wywolanie macra LCDcntrlWR – konfiguracja kursora
-         ENDM
+		 LCDcntrlWR #INITDISP ; wywolanie macra LCDcntrlWR – inicjalizacja LCD
+		 LCDcntrlWR #CLEAR	; wywolanie macra LCDcntrlWR – czyszczenie LCD
+		 LCDcntrlWR #LCDON	; wywolanie macra LCDcntrlWR – konfiguracja kursora
+		 ENDM
 
 // macro do wypisywania polowki wskazania pozycji czasu lub daty
 disp_nibble MACRO
@@ -202,23 +202,23 @@ czas_start:
 		mov dptr, #Czas
 		movc a, @a+dptr	; dziesiatki godzin
 		clr c
-		subb a, #30h    ; konwersja ascii->liczba
+		subb a, #30h	; konwersja ascii->liczba
 		
-		mov r2, a       ;zapisz cyfre dziesiatek w r2
+		mov r2, a	   ;zapisz cyfre dziesiatek w r2
 		mov b, #10
-		mul ab          ;pomnoz cyfre dziesiatek przez 10...
-		mov r1, a       ;...i odloz wynik do r1
+		mul ab		  ;pomnoz cyfre dziesiatek przez 10...
+		mov r1, a	   ;...i odloz wynik do r1
 		
-		inc dptr        ;przesun dptr na kolejny adres w stringu "Czas"
+		inc dptr		;przesun dptr na kolejny adres w stringu "Czas"
 		clr a
 		movc a, @a+dptr	; jednosci godzin
 		clr c
 		subb a, #30h	 ; konwersja ascii->liczba
 		
-		mov r3, a       ;zapisz cyfre jednosci w r3
+		mov r3, a	   ;zapisz cyfre jednosci w r3
 		
 		clr c
-		addc a, r1      ;w akumulatorze jest teraz "cala" liczba godzin
+		addc a, r1	  ;w akumulatorze jest teraz "cala" liczba godzin
 		
 		clr c
 		subb a, #24
@@ -226,17 +226,12 @@ czas_start:
 		
 				
 		mov a, r2
-		push dph        ;zapisanie dptr  (wskazuje teraz na jednostki godzin!) na stosie
+		push dph		;zapisanie dptr  (wskazuje teraz na jednostki godzin!) na stosie
 		push dpl
 		mov dptr, #RTChx ;dptr=adres na rejestr
-		movx @dptr, a    ;zaladuj rejestr zawartoscia wyjeta ze stringu "Czas"
-		;pop dpl         ;zdjecie dptr ze stosu
-		;pop dph
-		
+		movx @dptr, a	;zaladuj rejestr zawartoscia wyjeta ze stringu "Czas"
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxh
 		movx @dptr, a
 		pop dpl
@@ -245,18 +240,13 @@ czas_start:
 		jmp koniecGodzinyPozaZakresem
 		godzinyPozaZakresem:
 		
-		mov a, #00h     ;ladujemy minimalna godzine
-		push dph        ;zapisanie dptr  (wskazuje teraz na jednostki godzin!) na stosie
+		mov a, #00h	 ;ladujemy minimalna godzine
+		push dph		;zapisanie dptr  (wskazuje teraz na jednostki godzin!) na stosie
 		push dpl
 		mov dptr, #RTChx ;dptr=adres na rejestr
-		movx @dptr, a    ;zaladuj rejestr zawartoscia wyjeta ze stringu "Czas"
-		;pop dpl         ;zdjecie dptr ze stosu
-		;pop dph
-		
+		movx @dptr, a	;zaladuj rejestr zawartoscia wyjeta ze stringu "Czas"
 		
 		mov a, #00h	;ladujemy minimalna godzine
-		;push dph
-		;push dpl
 		mov dptr, #RTCxh
 		movx @dptr, a
 		pop dpl
@@ -273,21 +263,21 @@ czas_start:
 		clr c
 		subb a, #30h
 		
-		mov r2, a       ;zapisz cyfre dziesiatek w r2
+		mov r2, a	   ;zapisz cyfre dziesiatek w r2
 		mov b, #10
-		mul ab          ;pomnoz cyfre dziesiatek przez 10...
-		mov r1, a       ;...i odloz wynik do r1
+		mul ab		  ;pomnoz cyfre dziesiatek przez 10...
+		mov r1, a	   ;...i odloz wynik do r1
 		
-		inc dptr        ;przesun dptr na kolejny adres w stringu "Czas"
+		inc dptr		;przesun dptr na kolejny adres w stringu "Czas"
 		clr a
 		movc a, @a+dptr	; jednosci minut
 		clr c
 		subb a, #30h	 ; konwersja ascii->liczba
 		
-		mov r3, a       ;zapisz cyfre jednosci w r3
+		mov r3, a	   ;zapisz cyfre jednosci w r3
 		
 		clr c
-		addc a, r1      ;w akumulatorze jest teraz "cala" liczba minut
+		addc a, r1	  ;w akumulatorze jest teraz "cala" liczba minut
 		
 		clr c
 		subb a, #60
@@ -298,13 +288,8 @@ czas_start:
 		push dpl
 		mov dptr, #RTCmx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
-		
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxm
 		movx @dptr, a
 		pop dpl
@@ -317,13 +302,8 @@ czas_start:
 		push dpl
 		mov dptr, #RTCmx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
-		
 		
 		mov a, #00h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxm
 		movx @dptr, a
 		pop dpl
@@ -340,39 +320,33 @@ czas_start:
 		clr c
 		subb a, #30h
 		
-		mov r2, a       ;zapisz cyfre dziesiatek w r2
+		mov r2, a	   ;zapisz cyfre dziesiatek w r2
 		mov b, #10
-		mul ab          ;pomnoz cyfre dziesiatek przez 10...
-		mov r1, a       ;...i odloz wynik do r1
+		mul ab		  ;pomnoz cyfre dziesiatek przez 10...
+		mov r1, a	   ;...i odloz wynik do r1
 		
-		inc dptr        ;przesun dptr na kolejny adres w stringu "Czas"
+		inc dptr		;przesun dptr na kolejny adres w stringu "Czas"
 		clr a
 		movc a, @a+dptr	; jednosci godzin
 		clr c
 		subb a, #30h	 ; konwersja ascii->liczba
 		
-		mov r3, a       ;zapisz cyfre jednosci w r3
+		mov r3, a	   ;zapisz cyfre jednosci w r3
 		
 		clr c
-		addc a, r1      ;w akumulatorze jest teraz "cala" liczba sekund
+		addc a, r1	  ;w akumulatorze jest teraz "cala" liczba sekund
 		
 		clr c
 		subb a, #60
 		jnc sekundyPozaZakresem
-		
 		
 		mov a, r2
 		push dph
 		push dpl
 		mov dptr, #RTCsx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
-		
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxs
 		movx @dptr, a
 		pop dpl
@@ -381,18 +355,13 @@ czas_start:
 		jmp koniecSekundyPozaZakresem
 		sekundyPozaZakresem:
 		
-		mov a, #00h     ;ladujemy minimalna godzine
-		push dph        ;zapisanie dptr  (wskazuje teraz na jednostki godzin!) na stosie
+		mov a, #00h	 ;ladujemy minimalna godzine
+		push dph		;zapisanie dptr  (wskazuje teraz na jednostki godzin!) na stosie
 		push dpl
 		mov dptr, #RTChx ;dptr=adres na rejestr
-		movx @dptr, a    ;zaladuj rejestr zawartoscia wyjeta ze stringu "Czas"
-		;pop dpl         ;zdjecie dptr ze stosu
-		;pop dph
-		
+		movx @dptr, a	;zaladuj rejestr zawartoscia wyjeta ze stringu "Czas"
 		
 		mov a, #00h	;ladujemy minimalna godzine
-		;push dph
-		;push dpl
 		mov dptr, #RTCxh
 		movx @dptr, a
 		pop dpl
@@ -410,23 +379,23 @@ data_start:
 		clr c
 		subb a, #30h
 		
-		mov r2, a       ;zapisz cyfre dziesiatek w r2
+		mov r2, a	   ;zapisz cyfre dziesiatek w r2
 		mov b, #10
-		mul ab          ;pomnoz cyfre dziesiatek przez 10...
-		mov r1, a       ;...i odloz wynik do r1
+		mul ab		  ;pomnoz cyfre dziesiatek przez 10...
+		mov r1, a	   ;...i odloz wynik do r1
 		
-		inc dptr        ;przesun dptr na kolejny adres w stringu "Dzien"
+		inc dptr		;przesun dptr na kolejny adres w stringu "Dzien"
 		clr a
 		movc a, @a+dptr	; jednosci dni
 		clr c
 		subb a, #30h	 ; konwersja ascii->liczba
 		
-		mov r3, a       ;zapisz cyfre jednosci w r3
+		mov r3, a	   ;zapisz cyfre jednosci w r3
 		
 		clr c
-		addc a, r1      ;w akumulatorze jest teraz "cala" liczba dni
+		addc a, r1	  ;w akumulatorze jest teraz "cala" liczba dni
 		
-		mov r0, a       ;zapisujemy dodatkowo liczbe dni, na potrzeby dodatkowych testow z numerem miesiaca
+		mov r0, a	   ;zapisujemy dodatkowo liczbe dni, na potrzeby dodatkowych testow z numerem miesiaca
 		
 		clr c
 		subb a, #01		; zmiejszamy liczbe dni o 1, by uzyskac zakres <0;30> zamiast <1;31>		
@@ -436,27 +405,6 @@ data_start:
 		subb a, #31
 		jnc dniPozaZakresem
 		
-		
-		
-		/*
-		mov a, r2
-		push dph
-		push dpl
-		mov dptr, #RTCdx
-		movx @dptr, a
-		;pop dpl
-		;pop dph
-		
-		
-		mov a, r3
-		;push dph
-		;push dpl
-		mov dptr, #RTCxd
-		movx @dptr, a
-		pop dpl
-		pop dph
-		*/
-		
 		jmp koniecDniPozaZakresem
 		dniPozaZakresem:
 		
@@ -465,44 +413,42 @@ data_start:
 		push dpl
 		mov dptr, #RTCdx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #01h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 		pop dpl
 		pop dph
-		////////////////////////////////
+
+//------------------------------------------------------------------
+
+
 		//ANALIZA MIESIECY, GDY dzien okazal sie poza zakresem
 		inc dptr
 		clr a
 		movc a, @a+dptr ; separator
 		inc dptr
 		
-		
 		clr a
 		movc a, @a+dptr	; dziesiatki miesiaca
 		clr c
 		subb a, #30h
 		
-		mov r2, a       ;zapisz cyfre dziesiatek w r2
+		mov r2, a	   ;zapisz cyfre dziesiatek w r2
 		mov b, #10
-		mul ab          ;pomnoz cyfre dziesiatek przez 10...
-		mov r1, a       ;...i odloz wynik do r1
+		mul ab		  ;pomnoz cyfre dziesiatek przez 10...
+		mov r1, a	   ;...i odloz wynik do r1
 		
-		inc dptr        ;przesun dptr na kolejny adres w stringu "Dzien"
+		inc dptr		;przesun dptr na kolejny adres w stringu "Dzien"
 		clr a
 		movc a, @a+dptr	; jednosci miesiaca
 		clr c
 		subb a, #30h	 ; konwersja ascii->liczba
 		
-		mov r3, a       ;zapisz cyfre jednosci w r3
+		mov r3, a	   ;zapisz cyfre jednosci w r3
 		
 		clr c
-		addc a, r1      ;w akumulatorze jest teraz "cala" liczba miesiecy
+		addc a, r1	  ;w akumulatorze jest teraz "cala" liczba miesiecy
 		
 		clr c
 		subb a, #01		; zmiejszamy liczbe dni o 1, by uzyskac zakres <0;11> zamiast <1;12>
@@ -512,18 +458,13 @@ data_start:
 		subb a, #12
 		jnc miesiacePozaZakresemPrzyDniuPozaZakresem
 		
-		
 		mov a, r2
 		push dph
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
 		pop dpl
@@ -537,12 +478,8 @@ data_start:
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #01h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
 		pop dpl
@@ -550,8 +487,8 @@ data_start:
 		
 		jmp koniecMiesiacePozaZakresem
 		
-		
-		///////////////////////////////
+//------------------------------------------------------------------
+
 		
 		koniecDniPozaZakresem:
 		inc dptr
@@ -559,28 +496,27 @@ data_start:
 		movc a, @a+dptr ; separator
 		inc dptr
 		
-		
 		clr a
 		movc a, @a+dptr	; dziesiatki miesiaca
 		clr c
 		subb a, #30h
 		
-		mov r4, a       ;zapisz cyfre dziesiatek w r4
+		mov r4, a	   ;zapisz cyfre dziesiatek w r4
 		mov b, #10
-		mul ab          ;pomnoz cyfre dziesiatek przez 10...
-		mov r1, a       ;...i odloz wynik do r1
+		mul ab		  ;pomnoz cyfre dziesiatek przez 10...
+		mov r1, a	   ;...i odloz wynik do r1
 		
-		inc dptr        ;przesun dptr na kolejny adres w stringu "Dzien"
+		inc dptr		;przesun dptr na kolejny adres w stringu "Dzien"
 		clr a
 		movc a, @a+dptr	; jednosci miesiaca
 		clr c
 		subb a, #30h	 ; konwersja ascii->liczba
 		
-		mov r5, a       ;zapisz cyfre jednosci w r5
+		mov r5, a	   ;zapisz cyfre jednosci w r5
 		
 		clr c
-		addc a, r1      ;w akumulatorze jest teraz "cala" liczba miesiecy
-		mov r1, a       ;odloz cala liczbe miesiecy do akumulatora (dodatkowy backup)
+		addc a, r1	  ;w akumulatorze jest teraz "cala" liczba miesiecy
+		mov r1, a	   ;odloz cala liczbe miesiecy do akumulatora (dodatkowy backup)
 		
 		clr c
 		subb a, #01		; zmiejszamy liczbe dni o 1, by uzyskac zakres <0;11> zamiast <1;12>
@@ -632,28 +568,16 @@ data_start:
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r5
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r2
-		;push dph
-		;push dpl
 		mov dptr, #RTCdx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 		pop dpl
@@ -662,7 +586,7 @@ data_start:
 		jmp koniecMiesiacePozaZakresem
 				
 		przypadek30DniowyMiesiac:
-		mov a, r0      ;przywracamy wartosc dni
+		mov a, r0	  ;przywracamy wartosc dni
 		clr c
 		subb a, #31
 		jnc miesiacOKAleDzienNiedobry
@@ -672,28 +596,16 @@ data_start:
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r5
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r2
-		;push dph
-		;push dpl
 		mov dptr, #RTCdx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 		pop dpl
@@ -708,28 +620,16 @@ data_start:
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r5
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #00h
-		;push dph
-		;push dpl
 		mov dptr, #RTCdx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #01h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 		pop dpl
@@ -738,7 +638,7 @@ data_start:
 		jmp koniecMiesiacePozaZakresem
 		
 		przypadekLuty:
-		mov a, r0      ;przywracamy wartosc dni
+		mov a, r0	  ;przywracamy wartosc dni
 		clr c
 		subb a, #29
 		jnc lutyOKAleDzienNiedobry
@@ -748,28 +648,16 @@ data_start:
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #02h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r2
-		;push dph
-		;push dpl
 		mov dptr, #RTCdx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 		pop dpl
@@ -784,28 +672,16 @@ data_start:
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #02h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #00h
-		;push dph
-		;push dpl
 		mov dptr, #RTCdx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #01h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 		pop dpl
@@ -820,28 +696,16 @@ data_start:
 		push dpl
 		mov dptr, #RTCnx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, #01h
-		;push dph
-		;push dpl
 		mov dptr, #RTCxn
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r2
-		;push dph
-		;push dpl
 		mov dptr, #RTCdx
 		movx @dptr, a
-		;pop dpl
-		;pop dph
 		
 		mov a, r3
-		;push dph
-		;push dpl
 		mov dptr, #RTCxd
 		movx @dptr, a
 		pop dpl
@@ -896,13 +760,11 @@ data_start:
 		pop dph	
 		ret
 
-
-        ; program glówny
+		; program glówny
 start:	init_LCD
 
 		acall czas_start
 		acall data_start
-
 		
 czas_plynie:	acall disp_time
 				acall disp_date
