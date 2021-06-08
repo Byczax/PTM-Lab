@@ -711,7 +711,6 @@ data_start:
 		pop dpl
 		pop dph
 		
-		;jmp koniecMiesiacePozaZakresem ;nadmiarowe, ale na wszelki wypadek, gdyby zaszlo kopiowanie tego fragmentu
 		koniecMiesiacePozaZakresem:
 		inc dptr
 		clr a
