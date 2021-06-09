@@ -20,26 +20,26 @@ RTCdw equ 0FF0CH	; day of week
 RTCpf equ 0FF0FH
 
 // bajty sterujace LCD, inne dostepne w opisie LCD na stronie WWW
-#define  HOME	 0x80	 // put cursor to second line  
-#define  INITDISP 0x38	 // LCD init (8-bit mode)  
-#define  HOM2	 0xc0	 // put cursor to second line  
-#define  LCDON	0x0e	 // LCD nn, cursor off, blinking off
-#define  CLEAR	0x01	 // LCD display clear
+#define  HOME		0x80	 // put cursor to second line  
+#define  INITDISP	0x38	 // LCD init (8-bit mode)  
+#define  HOM2		0xc0	 // put cursor to second line  
+#define  LCDON		0x0e	 // LCD nn, cursor off, blinking off
+#define  CLEAR		0x01	 // LCD display clear
 
 org 0100H
-	Czas: db "13:70:70"
-	Dzien: db "07:02:2021*4"
-	Month: db "JanFebMarAprMayJunJulAugSepOctNovDec"
-	Week: db "SunMonTueWedThuFriSat"
+	Czas: 	db "13:70:70"
+	Dzien: 	db "07:02:2021*4"
+	Month: 	db "JanFebMarAprMayJunJulAugSepOctNovDec"
+	Week: 	db "SunMonTueWedThuFriSat"
 	TwentyH: db 02
 	TwentyL: db 00
 		
 // macro do wprowadzenia bajtu sterujacego na LCD
-LCDcntrlWR MACRO x		  ; x – parametr wywolania macra – bajt sterujacy
-		   LOCAL loop	   ; LOCAL oznacza ze etykieta loop moze sie powtórzyc w programie
+LCDcntrlWR MACRO x		  	; x – parametr wywolania macra – bajt sterujacy
+			LOCAL loop		; LOCAL oznacza ze etykieta loop moze sie powtórzyc w programie
 loop: MOV  DPTR,#LCDstatus  ; DPTR zaladowany adresem statusu
-	  MOVX A,@DPTR		  ; pobranie bajtu z biezacym statusem LCD
-	  JB   ACC.7,loop	   ; testowanie najstarszego bitu akumulatora
+	  MOVX A,@DPTR		  	; pobranie bajtu z biezacym statusem LCD
+	  JB	ACC.7,loop		; testowanie najstarszego bitu akumulatora
 							; – wskazuje gotowosc LCD
 	  MOV  DPTR,#LCDcontrol ; DPTR zaladowany adresem do podania bajtu sterujacego
 	  MOV  A, x			 ; do akumulatora trafia argument wywolania macrabajt sterujacy
@@ -224,7 +224,6 @@ czas_start:
 		subb a, #24
 		jnc godzinyPozaZakresem
 		
-				
 		mov a, r2
 		push dph		;zapisanie dptr  (wskazuje teraz na jednostki godzin!) na stosie
 		push dpl
@@ -422,7 +421,6 @@ data_start:
 
 //------------------------------------------------------------------
 
-
 		//ANALIZA MIESIECY, GDY dzien okazal sie poza zakresem
 		inc dptr
 		clr a
@@ -488,7 +486,6 @@ data_start:
 		jmp koniecMiesiacePozaZakresem
 		
 //------------------------------------------------------------------
-
 		
 		koniecDniPozaZakresem:
 		inc dptr
